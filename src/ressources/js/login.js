@@ -21,7 +21,7 @@ $(document).ready(() => {
 		user = { username: serialized[0].value, channels: serialized[1].value.split(', ') };
 		console.log(user, serialized[2].value);
 
-		socket = io(serialized[2].value);
+		socket = io.connect("http://"+serialized[2].value);
 
 		socket.on('connect', () => {
 			socket.emit('join', user);
