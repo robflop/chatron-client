@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+	<head>
+    	<meta charset="UTF-8">
+	</head>
+	
+	<body>
+		<p>Chatron login</p>
+		<br>
+		<form id='login' class='loginForm' method='post'>
+			<span id='username' class='loginForm'>Username: </span>
+			<input id='usernameInput' class='loginForm' type='text' name='username'>
+			<br>
+			<br>
+			<span id='channels' class='loginForm'>Channels: </span>
+			<input id='channelsInput' class='loginForm' type='text' name='channels'>
+			<br>
+			<br>
+			<input id='loginSubmit' class='loginForm' type='submit' value='Login'>
+		</form>
+
+		<link rel="stylesheet" href="../ressources/css/login.css">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.2/socket.io.slim.js"></script>
+		<script> window.$ = window.jQuery = require('jquery'); </script> <!-- make jquery work -->
+		<script src="../ressources/js/login.js"></script>
+	</body>
+</html>
+
