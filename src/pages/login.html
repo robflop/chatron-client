@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-    	<meta charset="UTF-8">
+    	<meta charset='UTF-8'>
 	</head>
 	
 	<body>
@@ -16,13 +16,17 @@
 			<input id='channelsInput' class='loginForm' type='text' name='channels'>
 			<br>
 			<br>
+			<span id='server' class='loginForm'>ServerIP : Port </span>
+			<input id='serverInput' class='loginForm' type='text' name='server'>
+			<br>
+			<br>
 			<input id='loginSubmit' class='loginForm' type='submit' value='Login'>
 		</form>
 
-		<link rel="stylesheet" href="../ressources/css/login.css">
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.2/socket.io.slim.js"></script>
+		<link rel='stylesheet' href='../ressources/css/login.css'>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.2/socket.io.slim.js'></script>
 		<script> window.$ = window.jQuery = require('jquery'); </script> <!-- make jquery work -->
-		<script src="../ressources/js/login.js"></script>
+		<script src='../ressources/js/login.js'></script>
 	</body>
 </html>
 
