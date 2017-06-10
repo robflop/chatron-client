@@ -1,5 +1,5 @@
 $(document).ready(() => {
-	let user, socket;
+	let user, socket, loggedIn = false;
 
 	$('#login').submit(e => {
 		if (!$('#usernameInput').val()) {
@@ -14,28 +14,38 @@ $(document).ready(() => {
 			$('#server').html('<span style=\'color:red;\'>Server address must be filled out.</span><br>');
 			return e.preventDefault();
 		}
+		if (loggedIn) {
+			$('#loginSubmit').after('<span style=\'color:red;\'>  Already logged in. </span>');
+			return e.preventDefault();
+		}
 
 		const serialized = $('#login').serializeArray();
 		const host = serialized[2].value.match(/^https?:\/\//) ? serialized[2].value : `http://${serialized[2].value}`;
 		user = { username: serialized[0].value, channels: serialized[1].value.split(', ') };
-		console.log(user, serialized[2].value);
 
 		socket = io.connect(host);
 
 		socket.on('connect', () => {
-			socket.emit('join', user);
+			socket.emit('login', user);
 			socket.on('duplicateUsernameError', error => {
 				null;
 			});
-			// window.location = '../../pages/index.html';
+			socket.on('loginSuccess', () => {
+				loggedIn = true;
+				$('#loginWrapper').css({ display: 'none' });
+				$('#chatWrapper').css({ display: 'block' });
+			});
 		});
 
-		e.preventDefault(); // don't refresh the page
+		return e.preventDefault(); // don't refresh the page
 	});
 
 	$('#logout').click(() => {
-		socket.emit('leave', user);
-		socket.disconnect();
+		socket.emit('logout', user);
+		socket.on('logoutSuccess', () => {
+			loggedIn = false;
+		});
+		return socket.disconnect();
 	});
 
 	function randomChannel() {
@@ -50,17 +60,17 @@ $(document).ready(() => {
 	$('#joinChannel').click(() => {
 		const channel = randomChannel();
 		socket.emit('channelJoin', { user, channel });
-		user.channels.push(channel);
+		return user.channels.push(channel);
 	});
 
 	$('#leaveChannel').click(() => {
 		const channel = user.channels[Math.floor(Math.random() * user.channels.length)];
 		socket.emit('channelLeave', { user, channel });
-		user.channels.splice(user.channels.indexOf(channel), 1);
+		return user.channels.splice(user.channels.indexOf(channel), 1);
 	});
 
 	$(window).on('beforeunload', () => {
 		socket.emit('leave', user);
-		socket.disconnect();
+		return socket.disconnect();
 	});
 });
