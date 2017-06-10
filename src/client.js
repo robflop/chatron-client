@@ -8,4 +8,8 @@ app.on('ready', () => {
 	const index = join('file://', __dirname, '/index.html');
 	mainWindow.loadURL(index);
 	mainWindow.webContents.openDevTools();
+
+	if (process.env.NODE_ENV !== 'production') {
+		require('vue-devtools').install();
+	}
 });

@@ -2,52 +2,51 @@
 <html>
 	<head>
     	<meta charset='UTF-8'>
+		<script src='https://unpkg.com/vue'></script>
 	</head>
 	
 	<body>
-		<p>Chatron</p>
-		<br>
-		<div id='loginWrapper'>
-			<form id='login' class='loginForm' method='post'>
-				<span id='username' class='loginForm'>Username: </span>
-				<input id='usernameInput' class='loginForm' type='text' name='username' >
+		<div id='login-wrapper'>
+			<form id='login' class='login-form' method='post'>
+				<span id='username' class='login-form'>Username: </span>
+				<input id='username-input' class='login-form' type='text' name='username' >
 				<br>
 				<br>
 				<span id='channels' class='loginForm'>Channels: </span>
-				<input id='channelsInput' class='loginForm' type='text' name='channels' >
+				<input id='channels-input' class='login-form' type='text' name='channels' >
 				<br>
 				<br>
 				<span id='server' class='loginForm'>ServerIP : Port </span>
-				<input id='serverInput' class='loginForm' type='text' name='server' >
+				<input id='server-input' class='login-form' type='text' name='server' >
 				<br>
 				<br>
-				<input id='loginSubmit' class='loginForm' type='submit' value='Login'>
+				<input id='login-submit' class='login-form' type='submit' value='Login'>
 			</form>
 			<br>
 			<!-- TODO: move all these buttons to the actual chat window etc -->
 			<button id='logout' type='button'>Log out</button>
 			<br>
 			<br>
-			<button id='joinChannel' type='button'>Join a channel</button>
+			<button id='join-channel' type='button'>Join a channel</button>
 			<br>
-			<button id='leaveChannel' type='button'>Leave a channel</button>
+			<button id='leave-channel' type='button'>Leave a channel</button>
 		</div>
 
-		<div id='chatWrapper'>
-			<div id='titleBar'>
+		<div id='chat-wrapper'>
+			<div id='title-bar'>
 
 			</div>
 			<div id='main'>
-				<div id='statusBar'>
+				<div id='status-bar'>
 
 				</div>
-				<div id='channelList'>
+				<div id='channel-list'>
 
 				</div>
-				<div id='userList'>
+				<div id='user-list'>
 
 				</div>
-				<div id='chatArea'>
+				<div id='chat-area'>
 
 				</div>
 			</div>

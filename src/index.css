@@ -1,3 +1,29 @@
+html {
+    height: 100%;
+    width: 100%;
+    display: table;
+}
+
+body {
+    display: table-cell;
+    min-height: 100%;
+    vertical-align: middle;
+	position: relative;
+}
+
 #chatWrapper {
+	
+}
+
+#loginWrapper {
 	display: none;
+    bottom: 0;
+    left: 0;
+    top: 0;
+    right: 0;
+    margin: auto;
+    position: absolute;
+    width: 200px;
+    height: 200px;
+
 }
