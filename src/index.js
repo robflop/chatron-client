@@ -2,20 +2,20 @@ $(document).ready(() => {
 	let user, socket, loggedIn = false;
 
 	$('#login').submit(e => {
-		if (!$('#usernameInput').val()) {
+		if (!$('#username-input').val()) {
 			$('#username').html('<span style=\'color:red;\'>Username must be filled out.</span><br>');
 			return e.preventDefault();
 		}
-		if (!$('#channelsInput').val()) {
+		if (!$('#channels-input').val()) {
 			$('#channels').html('<span style=\'color:red;\'>Channel(s) must be filled out.</span><br>');
 			return e.preventDefault();
 		}
-		if (!$('#serverInput').val()) {
+		if (!$('#server-input').val()) {
 			$('#server').html('<span style=\'color:red;\'>Server address must be filled out.</span><br>');
 			return e.preventDefault();
 		}
 		if (loggedIn) {
-			$('#loginSubmit').after('<span style=\'color:red;\'>  Already logged in. </span>');
+			$('#login-submit').after('<span style=\'color:red;\'>  Already logged in. </span>');
 			return e.preventDefault();
 		}
 
@@ -32,8 +32,8 @@ $(document).ready(() => {
 			});
 			socket.on('loginSuccess', () => {
 				loggedIn = true;
-				$('#loginWrapper').css({ display: 'none' });
-				$('#chatWrapper').css({ display: 'block' });
+				$('#login-wrapper').css({ display: 'none' });
+				$('#chat-wrapper').css({ display: 'block' });
 			});
 		});
 
@@ -57,13 +57,13 @@ $(document).ready(() => {
 		return name;
 	}
 
-	$('#joinChannel').click(() => {
+	$('#join-channel').click(() => {
 		const channel = randomChannel();
 		socket.emit('channelJoin', { user, channel });
 		return user.channels.push(channel);
 	});
 
-	$('#leaveChannel').click(() => {
+	$('#leave-channel').click(() => {
 		const channel = user.channels[Math.floor(Math.random() * user.channels.length)];
 		socket.emit('channelLeave', { user, channel });
 		return user.channels.splice(user.channels.indexOf(channel), 1);
