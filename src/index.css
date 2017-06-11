@@ -11,19 +11,25 @@ body {
 	position: relative;
 }
 
+.hide { display: none; }
+
 #chat-wrapper {
-	
+/* */
 }
 
 #login-wrapper {
-	display: none;
     bottom: 0;
     left: 0;
     top: 0;
     right: 0;
     margin: auto;
     position: absolute;
-    width: 200px;
-    height: 200px;
-
+    width: 300px;
+    height: 300px;
 }
+
+#login-wrapper form input { margin: 10px 0; }
+
+#chat-wrapper ul { list-style-type: none; }
+
+#chat-wrapper ul > li { margin: 10px 0; }
