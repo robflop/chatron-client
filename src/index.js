@@ -2,20 +2,9 @@ $(document).ready(() => {
 	let user, socket, loggedIn = false;
 
 	$('#login').submit(e => {
-		if (!$('#username-input').val()) {
-			$('#username').html('<span style=\'color:red;\'>Username must be filled out.</span><br>');
-			return e.preventDefault();
-		}
-		if (!$('#channels-input').val()) {
-			$('#channels').html('<span style=\'color:red;\'>Channel(s) must be filled out.</span><br>');
-			return e.preventDefault();
-		}
-		if (!$('#server-input').val()) {
-			$('#server').html('<span style=\'color:red;\'>Server address must be filled out.</span><br>');
-			return e.preventDefault();
-		}
 		if (loggedIn) {
-			$('#login-submit').after('<span style=\'color:red;\'>  Already logged in. </span>');
+			// TODO: make this only tell the user they aren't logged in once
+			$('#login-submit').after('<span style=\'color:red;\'> You are already logged in. </span>');
 			return e.preventDefault();
 		}
 
@@ -30,10 +19,26 @@ $(document).ready(() => {
 			socket.on('duplicateUsernameError', error => {
 				null;
 			});
+			socket.on('usernameLengthError', error => {
+				null;
+			});
+			socket.on('channelLengthError', error => {
+				null;
+			});
 			socket.on('loginSuccess', () => {
 				loggedIn = true;
-				$('#login-wrapper').css({ display: 'none' });
-				$('#chat-wrapper').css({ display: 'block' });
+				$('#login-wrapper, #chat-wrapper').toggleClass('hide');
+
+				const channelList = new Vue({
+					el: '#channel-list',
+					data: {
+						channels: []
+					}
+				});
+
+				for (const channel of user.channels) {
+					channelList.channels.push({ name: channel });
+				}
 			});
 		});
 
@@ -41,6 +46,8 @@ $(document).ready(() => {
 	});
 
 	$('#logout').click(() => {
+		// TODO: make this only tell the user they aren't logged in once
+		if (!socket) return $('#logout').after('<span style=\'color:red\'>  You are not logged in.</span>');
 		socket.emit('logout', user);
 		socket.on('logoutSuccess', () => {
 			loggedIn = false;
@@ -60,13 +67,28 @@ $(document).ready(() => {
 	$('#join-channel').click(() => {
 		const channel = randomChannel();
 		socket.emit('channelJoin', { user, channel });
-		return user.channels.push(channel);
+		socket.on('duplicateChannelError', error => {
+			null;
+		});
+		socket.on('channelLengthError', error => {
+			null;
+		});
+		socket.on('channelJoinSuccess', (user, channel) => {
+			return user.channels.push(channel);
+			// add the html elements for new channel
+		});
 	});
 
 	$('#leave-channel').click(() => {
 		const channel = user.channels[Math.floor(Math.random() * user.channels.length)];
 		socket.emit('channelLeave', { user, channel });
-		return user.channels.splice(user.channels.indexOf(channel), 1);
+		socket.on('missingChannelError', error => {
+			null;
+		});
+		socket.on('channelLeaveSuccess', (user, channel) => {
+			return user.channels.splice(user.channels.indexOf(channel), 1);
+			// delete the html elements for the channel
+		});
 	});
 
 	$(window).on('beforeunload', () => {

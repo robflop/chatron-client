@@ -4,50 +4,54 @@
     	<meta charset='UTF-8'>
 		<script src='https://unpkg.com/vue'></script>
 	</head>
-	
+
 	<body>
 		<div id='login-wrapper'>
-			<form id='login' class='login-form' method='post'>
-				<span id='username' class='login-form'>Username: </span>
-				<input id='username-input' class='login-form' type='text' name='username' >
-				<br>
-				<br>
-				<span id='channels' class='loginForm'>Channels: </span>
-				<input id='channels-input' class='login-form' type='text' name='channels' >
-				<br>
-				<br>
-				<span id='server' class='loginForm'>ServerIP : Port </span>
-				<input id='server-input' class='login-form' type='text' name='server' >
-				<br>
-				<br>
-				<input id='login-submit' class='login-form' type='submit' value='Login'>
+			<form id='login' method='post'>
+				<label for='username-input'>Username: </label>
+				<input id='username-input' type='text' name='username' required>
+				<label for='channels-input'>Channels: </label>
+				<input id='channels-input' type='text' name='channels' required>
+				<label for='server-input'>ServerIP : Port </label>
+				<input id='server-input' type='text' name='server' required>
+				<input id='login-submit' type='submit' value='Login'>
 			</form>
-			<br>
 			<!-- TODO: move all these buttons to the actual chat window etc -->
 			<button id='logout' type='button'>Log out</button>
 			<br>
 			<br>
 			<button id='join-channel' type='button'>Join a channel</button>
-			<br>
 			<button id='leave-channel' type='button'>Leave a channel</button>
 		</div>
 
-		<div id='chat-wrapper'>
-			<div id='title-bar'>
-
+		<div id='chat-wrapper' class='hide'>
+			<div id='title-bar-wrapper'>
+				<div id='title-bar'>
+					<p></p>
+				</div>
 			</div>
 			<div id='main'>
-				<div id='status-bar'>
+				<div id='status-bar-wrapper'>
+					<div id='status-bar'>
 
+					</div>
 				</div>
-				<div id='channel-list'>
-
+				<div id='channel-list-wrapper'>
+					<ul id='channel-list'>
+						<li v-for='channel in channels'>
+							{{ channel.name }}
+						</li>
+					</ul>
 				</div>
-				<div id='user-list'>
+				<div id='user-list-wrapper'>
+					<ul id='user-list'>
 
+					</ul>
 				</div>
-				<div id='chat-area'>
+				<div id='chat-area-wrapper'>
+					<div id='chat-area'>
 
+					</div>
 				</div>
 			</div>
 		</div>
