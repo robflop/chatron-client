@@ -8,22 +8,36 @@ $(document).ready(() => {
 			return e.preventDefault();
 		}
 
-		const serialized = $('#login').serializeArray();
-		const host = serialized[2].value.match(/^https?:\/\//) ? serialized[2].value : `http://${serialized[2].value}`;
-		user = { username: serialized[0].value, channels: serialized[1].value.split(', ') };
+		const serializedInput = $('#login').serializeArray();
+
+		const host = serializedInput[2].value.match(/^https?:\/\//) ? serializedInput[2].value : `http://${serializedInput[2].value}`;
+
+		const channelInput = serializedInput[1].value.split(', ');
+
+		user = { username: serializedInput[0].value, channels: {} };
+
+		for (const channel of channelInput) {
+			user.channels[channel] = { name: channel, users: [] };
+			// at this point "channel" still refers only to the name
+		}
 
 		socket = io.connect(host);
 
 		socket.on('connect', () => {
 			socket.emit('login', user);
 			socket.on('duplicateUsernameError', error => {
-				null;
+				null; // todo
 			});
 			socket.on('usernameLengthError', error => {
-				null;
+				null; // todo
 			});
 			socket.on('channelLengthError', error => {
-				null;
+				null; // todo
+			});
+			socket.on('channelData', channelsData => {
+				Object.values(channelsData).forEach(channel => {
+					if (user.channels[channel.name]) user.channels[channel.name].users = channel.users;
+				});
 			});
 			socket.on('loginSuccess', () => {
 				loggedIn = true;
@@ -32,13 +46,13 @@ $(document).ready(() => {
 				const channelList = new Vue({
 					el: '#channel-list',
 					data: {
-						channels: []
+						channels: {}
 					}
 				});
 
-				for (const channel of user.channels) {
-					channelList.channels.push({ name: channel });
-				}
+				Object.values(user.channels).forEach(channel => {
+					channelList.channels[channel.name] = channel;
+				});
 			});
 		});
 
@@ -51,6 +65,7 @@ $(document).ready(() => {
 		socket.emit('logout', user);
 		socket.on('logoutSuccess', () => {
 			loggedIn = false;
+			user = {};
 		});
 		return socket.disconnect();
 	});
@@ -66,29 +81,23 @@ $(document).ready(() => {
 
 	$('#join-channel').click(() => {
 		const channel = randomChannel();
-		socket.emit('channelJoin', { user, channel });
+		socket.emit('channelJoin', user, channel);
 		socket.on('duplicateChannelError', error => {
-			null;
+			null; // todo
 		});
 		socket.on('channelLengthError', error => {
-			null;
+			null; // todo;
 		});
-		socket.on('channelJoinSuccess', (user, channel) => {
-			return user.channels.push(channel);
-			// add the html elements for new channel
-		});
+		socket.on('channelJoinSuccess', user, channel => user.channels.push(channel));
 	});
 
 	$('#leave-channel').click(() => {
 		const channel = user.channels[Math.floor(Math.random() * user.channels.length)];
-		socket.emit('channelLeave', { user, channel });
+		socket.emit('channelLeave', user, channel);
 		socket.on('missingChannelError', error => {
-			null;
+			null; // todo
 		});
-		socket.on('channelLeaveSuccess', (user, channel) => {
-			return user.channels.splice(user.channels.indexOf(channel), 1);
-			// delete the html elements for the channel
-		});
+		socket.on('channelLeaveSuccess', (user, channel) => user.channels.splice(user.channels.indexOf(channel), 1));
 	});
 
 	$(window).on('beforeunload', () => {

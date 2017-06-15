@@ -27,30 +27,34 @@
 		<div id='chat-wrapper' class='hide'>
 			<div id='title-bar-wrapper'>
 				<div id='title-bar'>
-					<p></p>
+					<p> <!-- something here --> </p>
 				</div>
 			</div>
 			<div id='main'>
 				<div id='status-bar-wrapper'>
 					<div id='status-bar'>
-
+						<p> <!-- something here --> </p>
 					</div>
 				</div>
 				<div id='channel-list-wrapper'>
 					<ul id='channel-list'>
-						<li v-for='channel in channels'>
+						<li v-for='channel of Object.values(channels)'>
+							<!-- TODO: fix this -->
 							{{ channel.name }}
 						</li>
 					</ul>
 				</div>
 				<div id='user-list-wrapper'>
 					<ul id='user-list'>
-
+						<li v-for='channel of Array.from(channels.values())'>
+							<!-- TODO: fix this -->
+							{{ channel.users }}
+						</li>
 					</ul>
 				</div>
 				<div id='chat-area-wrapper'>
 					<div id='chat-area'>
-
+						<p> <!-- things here --> </p>
 					</div>
 				</div>
 			</div>
