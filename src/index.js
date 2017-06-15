@@ -66,8 +66,8 @@ $(document).ready(() => {
 		socket.on('logoutSuccess', () => {
 			loggedIn = false;
 			user = {};
+			return socket.disconnect();
 		});
-		return socket.disconnect();
 	});
 
 	function randomChannel() {
