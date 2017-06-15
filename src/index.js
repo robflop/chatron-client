@@ -16,9 +16,8 @@ $(document).ready(() => {
 
 		user = { username: serializedInput[0].value, channels: {} };
 
-		for (const channel of channelInput) {
-			user.channels[channel] = { name: channel, users: [] };
-			// at this point "channel" still refers only to the name
+		for (const channelName of channelInput) {
+			user.channels[channelName] = { name: channelName, users: [] };
 		}
 
 		socket = io.connect(host);
