@@ -9,15 +9,20 @@
 		<div id='login-wrapper'>
 			<form id='login' method='post'>
 				<label for='username-input'>Username: </label>
-				<input id='username-input' type='text' name='username' required>
+				<input id='username-input' type='text' name='username'>
+				<div id='username-notification'></div>
 				<label for='channels-input'>Channels: </label>
-				<input id='channels-input' type='text' name='channels' required>
+				<input id='channels-input' type='text' name='channels'>
+				<div id='channel-notification'></div>
 				<label for='server-input'>ServerIP : Port </label>
-				<input id='server-input' type='text' name='server' required>
+				<input id='server-input' type='text' name='server'>
+				<div id='server-notification'></div>
 				<input id='login-submit' type='submit' value='Login'>
+				<div id='login-notification'></div>
 			</form>
 			<!-- TODO: move all these buttons to the actual chat window etc -->
 			<button id='logout' type='button'>Log out</button>
+			<div id='logout-notification'></div>
 			<br>
 			<br>
 			<button id='join-channel' type='button'>Join a channel</button>
