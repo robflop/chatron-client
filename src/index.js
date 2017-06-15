@@ -31,7 +31,7 @@ $(document).ready(() => {
 			socket.on('usernameLengthError', error => {
 				null; // todo
 			});
-			socket.on('channelLengthError', error => {
+			socket.on('channelNameLengthError', error => {
 				null; // todo
 			});
 			socket.on('channelData', channelsData => {
@@ -88,7 +88,9 @@ $(document).ready(() => {
 		socket.on('channelLengthError', error => {
 			null; // todo;
 		});
-		socket.on('channelJoinSuccess', user, channel => user.channels.push(channel));
+		socket.on('channelJoinSuccess', channel => {
+			user.channels[channel.name] = channel;
+		});
 	});
 
 	$('#leave-channel').click(() => {
@@ -97,11 +99,13 @@ $(document).ready(() => {
 		socket.on('missingChannelError', error => {
 			null; // todo
 		});
-		socket.on('channelLeaveSuccess', (user, channel) => user.channels.splice(user.channels.indexOf(channel), 1));
+		socket.on('channelLeaveSuccess', channel => {
+			delete user.channels[channel.name];
+		});
 	});
 
 	$(window).on('beforeunload', () => {
-		socket.emit('leave', user);
+		socket.emit('logout', user);
 		return socket.disconnect();
 	});
 });
