@@ -1,82 +1,82 @@
 $(document).ready(() => {
 	let user, socket, loggedIn = false;
 
-	$('#login').submit(e => {
-		const serializedInput = $('#login').serializeArray();
+	// $('#login').submit(e => {
+	// 	const serializedInput = $('#login').serializeArray();
 
-		const username = serializedInput[0].value, channelInput = serializedInput[1].value;
-		const host = serializedInput[2].value.match(/^https?:\/\//) ? serializedInput[2].value : `http://${serializedInput[2].value}`;
+	// 	const username = serializedInput[0].value, channelInput = serializedInput[1].value;
+	// 	const host = serializedInput[2].value.match(/^https?:\/\//) ? serializedInput[2].value : `http://${serializedInput[2].value}`;
 
-		if (username.length < 2 || username.length > 32) {
-			$('#username-notification').html('<div style=\'color:red;\'> Username must be between 2 and 32 characters. </div>');
-			// return e.preventDefault();
-		}
-		else { $('#username-notification').html(''); }
+	// 	if (username.length < 2 || username.length > 32) {
+	// 		$('#username-notification').html('<div style=\'color:red;\'> Username must be between 2 and 32 characters. </div>');
+	// 		// return e.preventDefault();
+	// 	}
+	// 	else { $('#username-notification').html(''); }
 
-		if (channelInput.length < 2 || channelInput.length > 32) {
-			$('#channel-notification').html('<div style=\'color:red;\'> At least one channel must be provided, names must be 2 to 32 characters long. </div>');
-			// return e.preventDefault();
-		}
-		else { $('#channel-notification').html(''); }
+	// 	if (channelInput.length < 2 || channelInput.length > 32) {
+	// 		$('#channel-notification').html('<div style=\'color:red;\'> At least one channel must be provided, names must be 2 to 32 characters long. </div>');
+	// 		// return e.preventDefault();
+	// 	}
+	// 	else { $('#channel-notification').html(''); }
 
-		if (host === 'http://') {
-			$('#server-notification').html('<div style=\'color:red;\'> Server address must be provided. </div>');
-			// return e.preventDefault();
-		}
-		else { $('#server-notification').html(''); }
+	// 	if (host === 'http://') {
+	// 		$('#server-notification').html('<div style=\'color:red;\'> Server address must be provided. </div>');
+	// 		// return e.preventDefault();
+	// 	}
+	// 	else { $('#server-notification').html(''); }
 
-		if (loggedIn) {
-			// TODO: make this only tell the user they aren't logged in once
-			$('#login-notification').html('<div style=\'color:red;\'> You are already logged in. </div>');
-			return e.preventDefault();
-		}
-		else { $('#login-notification').html(''); }
+	// 	if (loggedIn) {
+	// 		// TODO: make this only tell the user they aren't logged in once
+	// 		$('#login-notification').html('<div style=\'color:red;\'> You are already logged in. </div>');
+	// 		return e.preventDefault();
+	// 	}
+	// 	else { $('#login-notification').html(''); }
 
-		user = { username: username, channels: {} };
-		const channelNames = channelInput.split(', ');
+	// 	user = { username: username, channels: {} };
+	// 	const channelNames = channelInput.split(', ');
 
 
-		for (const channelName of channelNames) {
-			user.channels[channelName] = { name: channelName, users: [] };
-		}
+	// 	for (const channelName of channelNames) {
+	// 		user.channels[channelName] = { name: channelName, users: [] };
+	// 	}
 
-		socket = io.connect(host);
+	// 	socket = io.connect(host);
 
-		socket.on('connect', () => {
-			socket.emit('login', user);
-			socket.on('duplicateUsernameError', error => {
-				null; // todo
-			});
-			socket.on('usernameLengthError', error => {
-				null; // todo
-			});
-			socket.on('channelNameLengthError', error => {
-				null; // todo
-			});
-			socket.on('channelData', channelsData => {
-				Object.values(channelsData).forEach(channel => {
-					if (user.channels[channel.name]) user.channels[channel.name].users = channel.users;
-				});
-			});
-			socket.on('loginSuccess', () => {
-				loggedIn = true;
-				// $('#login-wrapper, #chat-wrapper').toggleClass('hide');
+	// 	socket.on('connect', () => {
+	// 		socket.emit('login', user);
+	// 		socket.on('duplicateUsernameError', error => {
+	// 			null; // todo
+	// 		});
+	// 		socket.on('usernameLengthError', error => {
+	// 			null; // todo
+	// 		});
+	// 		socket.on('channelNameLengthError', error => {
+	// 			null; // todo
+	// 		});
+	// 		socket.on('channelData', channelsData => {
+	// 			Object.values(channelsData).forEach(channel => {
+	// 				if (user.channels[channel.name]) user.channels[channel.name].users = channel.users;
+	// 			});
+	// 		});
+	// 		socket.on('loginSuccess', () => {
+	// 			loggedIn = true;
+	// 			// $('#login-wrapper, #chat-wrapper').toggleClass('hide');
 
-				// const channelList = new Vue({
-				// 	el: '#channel-list',
-				// 	data: {
-				// 		channels: {}
-				// 	}
-				// });
+	// 			// const channelList = new Vue({
+	// 			// 	el: '#channel-list',
+	// 			// 	data: {
+	// 			// 		channels: {}
+	// 			// 	}
+	// 			// });
 
-				// Object.values(user.channels).forEach(channel => {
-				// 	channelList.channels[channel.name] = channel;
-				// });
-			});
-		});
+	// 			// Object.values(user.channels).forEach(channel => {
+	// 			// 	channelList.channels[channel.name] = channel;
+	// 			// });
+	// 		});
+	// 	});
 
-		return e.preventDefault(); // don't refresh the page
-	});
+	// 	return e.preventDefault(); // don't refresh the page
+	// });
 
 	$('#logout').click(e => {
 		if (!loggedIn) {
@@ -131,4 +131,43 @@ $(document).ready(() => {
 		socket.emit('logout', user);
 		return socket.disconnect();
 	});
+});
+
+const encapsulator = new Vue({
+	el: '#app',
+	data: {
+		username: '',
+		channels: '',
+		server: '',
+		userNameStatus: false,
+		channelsStatus: false,
+		serverStatus: false,
+		loggedIn: 0,
+		triedToLoginAgain: false
+	},
+	mounted: function() {},
+	methods: {
+		checkUsername: function(e) {
+			this.userNameStatus = (this.username.length > 0 || e) && !(this.username.length >= 2 && this.username.length <= 32)
+		},
+		checkChannels: function(e) {
+			this.channelsStatus = (this.channels.length > 0 || e) && !(this.channels.length >= 2 && this.channels.length <= 32)
+		},
+		checkServer: function(e) {
+			this.serverStatus = (this.server.length > 0 || e) && !(this.server.length >= 2 && this.server.length <= 32)
+		},
+		login: function() {
+			// add socket.io stuff and then move this logged in to socket.io's callback
+			if (this.loggedIn === 1) {
+				this.triedToLoginAgain = true;
+				return;
+			};
+			this.checkUsername(true);
+			this.checkChannels(true);
+			this.checkServer(true);
+			if (!this.userNameStatus && !this.channelsStatus && !this.serverStatus) {
+				return this.loggedIn = 1;
+			}
+		}
+	}
 });
