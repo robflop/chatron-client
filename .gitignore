@@ -2,7 +2,7 @@
 logs
 *.log
 npm-debug.log*
-.vscode
+# committing vscode file cause it took me ages to figure out renderer process debugging
 
 # Runtime data
 pids
