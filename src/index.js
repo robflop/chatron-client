@@ -128,7 +128,7 @@ $(document).ready(() => {
 	});
 
 	$(window).on('beforeunload', () => {
-		socket.emit('logout', user);
-		return socket.disconnect();
+		if (loggedIn) { socket.emit('logout', user); socket.disconnect(); }
+		return process.exit();
 	});
 });
