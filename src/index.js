@@ -128,7 +128,10 @@ $(document).ready(() => {
 	});
 
 	$(window).on('beforeunload', () => {
-		if (loggedIn) { socket.emit('logout', user); socket.disconnect(); }
+		if (loggedIn) {
+			socket.emit('logout', user);
+			socket.disconnect();
+		}
 		return process.exit();
 	});
 });
