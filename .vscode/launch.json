@@ -8,14 +8,14 @@
 			"name": "Main process",
 			"type": "node",
 			"request": "launch",
-			"runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
+			"runtimeExecutable": "${workspaceRoot}/node_modules/electron/dist/Electron.exe",
 			"program": "${workspaceRoot}/src/client"
 		},
     	{
       		"name": "Renderer process",
       		"type": "chrome",
 			"request": "launch",
-			"runtimeExecutable": "D:/Github Projects/vscode-electron-debug/electron-quick-start/node_modules/electron/dist/Electron.exe",
+			"runtimeExecutable": "${workspaceRoot}/node_modules/electron/dist/Electron.exe",
       		"runtimeArgs": [
         		"${workspaceRoot}/src/client",
         		"--remote-debugging-port=9222"
