@@ -1,0 +1,26 @@
+{
+	// Use IntelliSense to learn about possible Node.js debug attributes.
+	// Hover to view descriptions of existing attributes.
+	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Main process",
+			"type": "node",
+			"request": "launch",
+			"runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
+			"program": "${workspaceRoot}/src/client"
+		},
+    	{
+      		"name": "Renderer process",
+      		"type": "chrome",
+			"request": "launch",
+			"runtimeExecutable": "D:/Github Projects/vscode-electron-debug/electron-quick-start/node_modules/electron/dist/Electron.exe",
+      		"runtimeArgs": [
+        		"${workspaceRoot}/src/client",
+        		"--remote-debugging-port=9222"
+      		],
+      		"webRoot": "${workspaceRoot}/src"
+    	}
+	]
+}
