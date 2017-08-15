@@ -14,7 +14,7 @@ $(document).ready(() => {
 		else { $('#username-notification').html(''); }
 
 		if (channelInput.length < 2 || channelInput.length > 32) {
-			$('#channel-notification').html('<div style=\'color:red;\'> At least one channel must be provided, names must be 2 to 32 characters long. </div>');
+			$('#channel-notification').html('<div style=\'color:red;\'> At least one channel must be provided.</div>');
 			// return e.preventDefault();
 		}
 		else { $('#channel-notification').html(''); }
