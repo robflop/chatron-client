@@ -26,7 +26,6 @@ $(document).ready(() => {
 		else { $('#server-notification').html(''); }
 
 		if (loggedIn) {
-			// TODO: make this only tell the user they aren't logged in once
 			$('#login-notification').html('<div style=\'color:red;\'> You are already logged in. </div>');
 			return e.preventDefault();
 		}
