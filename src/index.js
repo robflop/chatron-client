@@ -1,136 +1,94 @@
-$(document).ready(() => {
-	let user, socket, loggedIn = false;
-
-	$('#login').submit(e => {
-		const serializedInput = $('#login').serializeArray();
-
-		const username = serializedInput[0].value, channelInput = serializedInput[1].value;
-		const host = serializedInput[2].value.match(/^https?:\/\//) ? serializedInput[2].value : `http://${serializedInput[2].value}`;
-
-		if (username.length < 2 || username.length > 32) {
-			$('#username-notification').html('<div style=\'color:red;\'> Username must be between 2 and 32 characters. </div>');
-			// return e.preventDefault();
-		}
-		else { $('#username-notification').html(''); }
-
-		if (channelInput.length < 2 || channelInput.length > 32) {
-			$('#channel-notification').html('<div style=\'color:red;\'> At least one channel must be provided.</div>');
-			// return e.preventDefault();
-		}
-		else { $('#channel-notification').html(''); }
-
-		if (host === 'http://') {
-			$('#server-notification').html('<div style=\'color:red;\'> Server address must be provided. </div>');
-			// return e.preventDefault();
-		}
-		else { $('#server-notification').html(''); }
-
+const app = new Vue({
+	el: '#app',
+	data: {
+		username: '',
+		channels: '',
+		server: '',
+		user: { username: '', channels: {} },
+		socket: null,
+		loggedIn: false
+	},
+	beforeDestroy: () => {
 		if (loggedIn) {
-			$('#login-notification').html('<div style=\'color:red;\'> You are already logged in. </div>');
-			return e.preventDefault();
-		}
-		else { $('#login-notification').html(''); }
-
-		user = { username: username, channels: {} };
-		const channelNames = channelInput.split(', ');
-
-
-		for (const channelName of channelNames) {
-			user.channels[channelName] = { name: channelName, users: [] };
-		}
-
-		socket = io.connect(host);
-
-		socket.on('connect', () => {
-			socket.emit('login', user);
-			socket.on('duplicateUsernameError', error => {
-				null; // todo
-			});
-			socket.on('usernameLengthError', error => {
-				null; // todo
-			});
-			socket.on('channelNameLengthError', error => {
-				null; // todo
-			});
-			socket.on('channelData', channelsData => {
-				Object.values(channelsData).forEach(channel => {
-					if (user.channels[channel.name]) user.channels[channel.name].users = channel.users;
-				});
-			});
-			socket.on('loginSuccess', () => {
-				loggedIn = true;
-				// $('#login-wrapper, #chat-wrapper').toggleClass('hide');
-
-				// const channelList = new Vue({
-				// 	el: '#channel-list',
-				// 	data: {
-				// 		channels: {}
-				// 	}
-				// });
-
-				// Object.values(user.channels).forEach(channel => {
-				// 	channelList.channels[channel.name] = channel;
-				// });
-			});
-		});
-
-		return e.preventDefault(); // don't refresh the page
-	});
-
-	$('#logout').click(e => {
-		if (!loggedIn) {
-			$('#logout-notification').html('<div style=\'color:red\'>  You are not logged in.</div>');
-			$('#login-notification').html('');
-			return e.preventDefault();
-		}
-		else { $('#logout-notification').html(''); }
-		socket.emit('logout', user);
-		socket.on('logoutSuccess', () => {
-			loggedIn = false;
-			user = {};
-			return socket.disconnect();
-		});
-	});
-
-	function randomChannel() {
-		let name = '';
-		const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-		for (let i = 0; i < 5; i++) {
-			name += chars.charAt(Math.floor(Math.random() * chars.length));
-		}
-		return name;
-	}
-
-	$('#join-channel').click(() => {
-		const channel = randomChannel();
-		socket.emit('channelJoin', user, channel);
-		socket.on('duplicateChannelError', error => {
-			null; // todo
-		});
-		socket.on('channelLengthError', error => {
-			null; // todo;
-		});
-		socket.on('channelJoinSuccess', channel => {
-			user.channels[channel.name] = channel;
-		});
-	});
-
-	$('#leave-channel').click(() => {
-		const channel = user.channels[Math.floor(Math.random() * user.channels.length)];
-		socket.emit('channelLeave', user, channel);
-		socket.on('missingChannelError', error => {
-			null; // todo
-		});
-		socket.on('channelLeaveSuccess', channel => {
-			delete user.channels[channel.name];
-		});
-	});
-
-	$(window).on('beforeunload', () => {
-		if (loggedIn) {
-			socket.emit('logout', user);
-			socket.disconnect();
+			this.socket.emit('logout', user);
+			this.socket.disconnect();
 		}
 		return process.exit();
-	});
+	},
+	methods: {
+		checkUsername() {
+			return this.username.trim().length >= 2 && this.username.trim().length <= 32;
+		},
+
+		checkChannels() {
+			if (!this.channels) return false;
+			return this.channels.split(' ').every(channel => channel.trim().length >= 2 && channel.trim().length <= 32);
+		},
+
+		checkServer() {
+			return Boolean(this.server);
+		},
+
+		login() {
+			if (!this.checkUsername() || !this.checkChannels() || !this.checkServer()) return;
+
+			for (const channelName of this.channels.split(' ')) {
+				this.user.channels[channelName] = { name: channelName };
+			}
+			this.user.username = this.username;
+			const host = this.server.match(/^https?:\/\//) ? this.server : `http://${this.server}`;
+			// prepend http if not present to connect properly
+
+			this.socket = io.connect(host);
+
+			this.socket.on('connect', () => {
+				this.socket.emit('login', this.user);
+				this.socket.on('login', loginData => {
+					console.log(loginData);
+					if (loginData.error) return console.log(loginData.error);
+					Object.values(loginData.channels).forEach(channel => {
+						this.user.channels[channel.name] = channel;
+					});
+					return this.loggedIn = true;
+				});
+			});
+		},
+
+		logout() {
+			if (!this.loggedIn) return;
+			this.socket.emit('logout', user);
+			this.socket.on('logout', () => {
+				this.loggedIn = false;
+				this.user = {};
+				return this.socket.disconnect();
+			});
+		},
+
+		joinChannel() {
+			if (!this.loggedIn) return;
+			const channel = this.randomChannel();
+			this.socket.emit('channelJoin', this.user, { name: channel });
+			this.socket.on('channelJoin', channel => {
+				this.user.channels[channel.name] = channel;
+			});
+		},
+
+		leaveChannel() {
+			if (!this.loggedIn) return;
+			const channel = this.user.channels[Math.floor(Math.random() * user.channels.length)];
+			this.socket.emit('channelLeave', this.user, { name: channel });
+			this.socket.on('channelLeave', channel => {
+				delete this.user.channels[channel.name];
+			});
+		},
+
+		randomChannel() {
+			let name = '';
+			const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+			for (let i = 0; i < 5; i++) {
+				name += chars.charAt(Math.floor(Math.random() * chars.length));
+			}
+			return name;
+		}
+	}
 });

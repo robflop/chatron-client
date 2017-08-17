@@ -1,74 +1,67 @@
 <!DOCTYPE html>
 <html>
 	<head>
-    	<meta charset='UTF-8'>
+		<meta charset='UTF-8'>
+		<link rel='stylesheet' href='./index.css'>
 		<script src='https://unpkg.com/vue'></script>
 	</head>
 
 	<body>
-		<div id='login-wrapper'>
-			<form id='login' method='post'>
-				<label for='username-input'>Username: </label>
-				<input id='username-input' type='text' name='username'>
-				<div id='username-notification'></div>
-				<label for='channels-input'>Channels: </label>
-				<input id='channels-input' type='text' name='channels'>
-				<div id='channel-notification'></div>
-				<label for='server-input'>ServerIP : Port </label>
-				<input id='server-input' type='text' name='server'>
-				<div id='server-notification'></div>
-				<input id='login-submit' type='submit' value='Login'>
-				<div id='login-notification'></div>
-			</form>
-			<!-- TODO: move all these buttons to the actual chat window etc -->
-			<button id='logout' type='button'>Log out</button>
-			<div id='logout-notification'></div>
-			<br>
-			<br>
-			<button id='join-channel' type='button'>Join a channel</button>
-			<button id='leave-channel' type='button'>Leave a channel</button>
-		</div>
-
-		<div id='chat-wrapper' class='hide'>
-			<div id='title-bar-wrapper'>
-				<div id='title-bar'>
-					<p> <!-- something here --> </p>
-				</div>
+		<div id="app">
+			<div id='login-wrapper'>
+				<form id='login' method='post'>
+					<label for='username-input'>Username: </label>
+					<input id='username-input' type='text' v-model="username">
+					<div style='color:red;'><span v-show="!checkUsername()">Username must be between 2 and 32 characters.</span></div>
+					<label for='channels-input'>Channels: </label>
+					<input id='channels-input' type='text' v-model="channels">
+					<div style='color:red;'><span v-show="!checkChannels()">Whitespace-seperated channel names (2-32 chars per name) must be provided.</span></div>
+					<label for='server-input'>ServerIP : Port </label>
+					<input id='server-input' type='text' v-model="server">
+					<div style='color:red;'><span v-show="!checkServer()">Server address must be provided.</span></div>
+					<input id='login-submit' type='submit' value='Login' @click.prevent="login()">
+					<div style='color:red;'><span v-show="loggedIn">You are already logged in.</span></div>
+				</form>
+				<!-- TODO: move all these buttons to the actual chat window etc -->
+				<button id='logout' type='button' @click="logout()">Log out</button>
+				<div id='logout-notification'></div>
+				<br>
+				<br>
+				<button id='join-channel' type='button' @click="joinChannel()">Join a channel</button>
+				<button id='leave-channel' type='button' @click="leaveChannel()">Leave a channel</button>
 			</div>
-			<div id='main'>
-				<div id='status-bar-wrapper'>
-					<div id='status-bar'>
+
+			<div id='chat-wrapper' class='hide'>
+				<div id='title-bar-wrapper'>
+					<div id='title-bar'>
 						<p> <!-- something here --> </p>
 					</div>
 				</div>
-				<div id='channel-list-wrapper'>
-					<ul id='channel-list'>
-						<li v-for='channel of Object.values(channels)'>
-							<!-- TODO: fix this -->
-							{{ channel.name }}
-						</li>
-					</ul>
-				</div>
-				<div id='user-list-wrapper'>
-					<ul id='user-list'>
-						<li v-for='channel of Array.from(channels.values())'>
-							<!-- TODO: fix this -->
-							{{ channel.users }}
-						</li>
-					</ul>
-				</div>
-				<div id='chat-area-wrapper'>
-					<div id='chat-area'>
-						<p> <!-- things here --> </p>
+				<div id='main'>
+					<div id='status-bar-wrapper'>
+						<div id='status-bar'>
+							<p> <!-- something here --> </p>
+						</div>
+					</div>
+					<div id='channel-list-wrapper'>
+						<ul id='channel-list'>
+						</ul>
+					</div>
+					<div id='user-list-wrapper'>
+						<ul id='user-list'>
+						</ul>
+					</div>
+					<div id='chat-area-wrapper'>
+						<div id='chat-area'>
+							<p> <!-- things here --> </p>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 
-		<link rel='stylesheet' href='./index.css'>
 		<script src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.2/socket.io.slim.js'></script>
-		<script> window.$ = window.jQuery = require('jquery'); </script> <!-- make jquery work -->
-		<script src='./index.js'></script>
+		<script src='index.js'></script>
 	</body>
 </html>
 
