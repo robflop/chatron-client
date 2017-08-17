@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html>
 	<head>
-    	<meta charset='UTF-8'>
+		<meta charset='UTF-8'>
+		<link rel='stylesheet' href='./index.css'>
+		<script src='https://unpkg.com/vue'></script>
 	</head>
 
 	<body>
@@ -9,24 +11,24 @@
 			<div id='login-wrapper'>
 				<form id='login' method='post'>
 					<label for='username-input'>Username: </label>
-					<input id='username-input' type='text' name='username' v-model="username" v-on:keyup="checkUsername()">
-					<div style='color:red;'><span v-show="userNameStatus" >Username must be between 2 and 32 characters.</span></div>
+					<input id='username-input' type='text' v-model="username">
+					<div style='color:red;'><span v-show="!checkUsername()">Username must be between 2 and 32 characters.</span></div>
 					<label for='channels-input'>Channels: </label>
-					<input id='channels-input' type='text' name='channels' v-model="channels" v-on:keyup="checkChannels()">
-					<div style='color:red;'><span v-show="channelsStatus" >At least one channel must be provided, names must be 2 to 32 characters long.</span></div>
+					<input id='channels-input' type='text' v-model="channels">
+					<div style='color:red;'><span v-show="!checkChannels()">Whitespace-seperated channel names (2-32 chars per name) must be provided.</span></div>
 					<label for='server-input'>ServerIP : Port </label>
-					<input id='server-input' type='text' name='server' v-model="server" v-on:keyup="checkServer()">
-					<div style='color:red;'><span v-show="serverStatus" >Server address must be provided.</span></div>
-					<input id='login-submit' type='submit' value='Login' v-on:click.prevent="login">
-					<div style='color:red;'><span v-show="triedToLoginAgain">You are already logged in.</span></div>
+					<input id='server-input' type='text' v-model="server">
+					<div style='color:red;'><span v-show="!checkServer()">Server address must be provided.</span></div>
+					<input id='login-submit' type='submit' value='Login' @click.prevent="login()">
+					<div style='color:red;'><span v-show="loggedIn">You are already logged in.</span></div>
 				</form>
 				<!-- TODO: move all these buttons to the actual chat window etc -->
-				<button id='logout' type='button'>Log out</button>
+				<button id='logout' type='button' @click="logout()">Log out</button>
 				<div id='logout-notification'></div>
 				<br>
 				<br>
-				<button id='join-channel' type='button'>Join a channel</button>
-				<button id='leave-channel' type='button'>Leave a channel</button>
+				<button id='join-channel' type='button' @click="joinChannel()">Join a channel</button>
+				<button id='leave-channel' type='button' @click="leaveChannel()">Leave a channel</button>
 			</div>
 
 			<div id='chat-wrapper' class='hide'>
@@ -58,10 +60,7 @@
 			</div>
 		</div>
 
-		<link rel='stylesheet' href='./index.css'>
 		<script src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.2/socket.io.slim.js'></script>
-		<script> window.$ = window.jQuery = require('jquery'); </script> <!-- make jquery work -->
-		<script src='https://unpkg.com/vue'></script>
 		<script src='index.js'></script>
 	</body>
 </html>
