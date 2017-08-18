@@ -12,12 +12,13 @@ body {
 }
 
 #chat-wrapper {
+	height: 100vh;
 	display: grid;
 	grid-template-columns: 10% 80% 10%;
 	grid-template-rows: 10% 80% 10%;
-	grid-template-areas: "header title-bar header"
+	grid-template-areas: "title-bar title-bar title-bar"
 						 "channel-list chat-area user-list"
-						 "footer message-bar footer"
+						 "footer message-bar logout"
 }
 
 #login-wrapper {
@@ -36,17 +37,22 @@ body {
 }
 
 #chat-wrapper ul {
+	padding: 1vh;
 	list-style-type: none;
 }
 
 #chat-wrapper ul > li {
 	-webkit-user-select: none;
 	user-select: none;
-	margin: 10px 0;
+	margin: 5px 0;
+}
+
+#title-bar-wrapper {
+	grid-area: title-bar;
 }
 
 #channel-list-wrapper {
-	grid-area: chat-area;
+	grid-area: channel-list;
 }
 
 #chat-area-wrapper {

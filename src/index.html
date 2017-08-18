@@ -35,24 +35,22 @@
 			<div id="chat-wrapper" v-if="loggedIn">
 				<div id="title-bar-wrapper">
 					<div id="title-bar">
-						<p> <!-- something here --> </p>
+						<p> Very cool and useful Chatron titlebar that will display nice things later on. Maybe. </p>
 					</div>
 				</div>
-				<div id="main">
-					<div id="channel-list-wrapper">
-						<ul id="channel-list">
-							<li v-for="channel in user.channels" @click="switchChannel(channel.name)"> 💬 {{ channel.name }} </li>
-						</ul>
-					</div>
-					<div id="user-list-wrapper">
-						<ul id="user-list">
-							<li v-for="user in user.channels[selectedChannel]"> {{ user.username }} </li>
-						</ul>
-					</div>
-					<div id="chat-area-wrapper">
-						<div id="chat-area">
-							<p> <!-- things here --> </p>
-						</div>
+				<div id="channel-list-wrapper">
+					<ul id="channel-list">
+						<li v-for="channel in user.channels" @click="switchChannel(channel.name)"> 💬 {{ channel.name }} </li>
+					</ul>
+				</div>
+				<div id="user-list-wrapper">
+					<ul id="user-list">
+						<li v-for="user of user.channels[selectedChannel].users"> 👺 {{ user }} </li>
+					</ul>
+				</div>
+				<div id="chat-area-wrapper">
+					<div id="chat-area">
+						<p> <!-- things here --> </p>
 					</div>
 				</div>
 			</div>
