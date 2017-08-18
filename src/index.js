@@ -88,7 +88,7 @@ const app = new Vue({
 		},
 
 		switchChannel(channel) {
-			console.log(channel + " pls, ty");
+			console.log(`${channel} pls, ty`);
 			this.selectedChannel = channel;
 		},
 
