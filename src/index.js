@@ -4,9 +4,10 @@ const app = new Vue({
 		username: '',
 		channels: '',
 		server: '',
-		user: { username: '', channels: {} },
 		socket: null,
-		loggedIn: false
+		loggedIn: false,
+		user: { username: '', channels: {} },
+		selectedChannel: ''
 	},
 	mounted: () => {
 		window.addEventListener('beforeunload', () => {
@@ -51,6 +52,8 @@ const app = new Vue({
 					Object.values(loginData.channels).forEach(channel => {
 						this.user.channels[channel.name] = channel;
 					});
+					this.selectedChannel = Object.keys(this.user.channels)[0];
+					// set first channel as selected one by default
 					return this.loggedIn = true;
 				});
 			});
@@ -82,6 +85,11 @@ const app = new Vue({
 			this.socket.on('channelLeave', channel => {
 				delete this.user.channels[channel.name];
 			});
+		},
+
+		switchChannel(channel) {
+			console.log(channel + " pls, ty");
+			this.selectedChannel = channel;
 		},
 
 		randomChannel() {

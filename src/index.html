@@ -35,21 +35,18 @@
 			<div id="chat-wrapper" v-if="loggedIn">
 				<div id="title-bar-wrapper">
 					<div id="title-bar">
-						<p> <!-- something here -->ello dis is main content </p>
+						<p> <!-- something here --> </p>
 					</div>
 				</div>
 				<div id="main">
-					<div id="status-bar-wrapper">
-						<div id="status-bar">
-							<p> <!-- something here --> </p>
-						</div>
-					</div>
 					<div id="channel-list-wrapper">
 						<ul id="channel-list">
+							<li v-for="channel in user.channels" @click="switchChannel(channel.name)"> 💬 {{ channel.name }} </li>
 						</ul>
 					</div>
 					<div id="user-list-wrapper">
 						<ul id="user-list">
+							<li v-for="user in user.channels[selectedChannel]"> {{ user.username }} </li>
 						</ul>
 					</div>
 					<div id="chat-area-wrapper">

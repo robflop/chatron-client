@@ -11,10 +11,13 @@ body {
 	position: relative;
 }
 
-.hide { display: none; }
-
 #chat-wrapper {
-/* */
+	display: grid;
+	grid-template-columns: 10% 80% 10%;
+	grid-template-rows: 10% 80% 10%;
+	grid-template-areas: "header title-bar header"
+						 "channel-list chat-area user-list"
+						 "footer message-bar footer"
 }
 
 #login-wrapper {
@@ -28,8 +31,32 @@ body {
     height: 300px;
 }
 
-#login-wrapper form input { margin: 10px 0; }
+#login-wrapper form input {
+	margin: 10px 0;
+}
 
-#chat-wrapper ul { list-style-type: none; }
+#chat-wrapper ul {
+	list-style-type: none;
+}
 
-#chat-wrapper ul > li { margin: 10px 0; }
+#chat-wrapper ul > li {
+	-webkit-user-select: none;
+	user-select: none;
+	margin: 10px 0;
+}
+
+#channel-list-wrapper {
+	grid-area: chat-area;
+}
+
+#chat-area-wrapper {
+	grid-area: chat-area;
+}
+
+#user-list-wrapper {
+	grid-area: user-list;
+}
+
+#message-bar-wrapper {
+	grid-area: message-bar;
+}
