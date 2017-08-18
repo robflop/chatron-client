@@ -11,21 +11,6 @@ body {
 	position: relative;
 }
 
-form > label, form > div, button {
-	-webkit-user-select: none;
-	user-select: none;
-}
-
-#chat-wrapper {
-	height: 100vh;
-	display: grid;
-	grid-template-columns: 10% 80% 10%;
-	grid-template-rows: 10% 80% 10%;
-	grid-template-areas: "title-bar title-bar title-bar"
-						 "channel-list chat-area user-list"
-						 "footer message-bar logout"
-}
-
 #login-wrapper {
     bottom: 0;
     left: 0;
@@ -39,6 +24,16 @@ form > label, form > div, button {
 
 #login-wrapper form input {
 	margin: 10px 0;
+}
+
+#chat-wrapper {
+	height: 100vh;
+	display: grid;
+	grid-template-columns: 10% 80% 10%;
+	grid-template-rows: 10% 80% 10%;
+	grid-template-areas: "title-bar title-bar title-bar"
+						 "channel-list chat-area user-list"
+						 "footer message-bar logout"
 }
 
 #chat-wrapper ul {
