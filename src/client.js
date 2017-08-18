@@ -7,6 +7,11 @@ app.on('ready', () => {
 	const mainWindow = new BrowserWindow({});
 	mainWindow.loadURL(`file://${__dirname}/index.html`);
 	mainWindow.setMenu(null);
+	mainWindow.webContents.openDevTools();
 
-	mainWindow.on('close', () => process.exit());
+	// if (process.env.NODE_ENV !== 'production') {
+	// 	require('vue-devtools').install();
+	// }
 });
+
+app.on('window-all-closed', () => app.quit());
