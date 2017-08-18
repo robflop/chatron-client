@@ -9,19 +9,19 @@
 
 	<body>
 		<div id="app">
-			<div id="login-wrapper">
+			<div id="login-wrapper" v-if="!loggedIn">
 				<form id="login" method="post">
 					<label for="username-input">Username: </label>
-					<input id="username-input" type="text" v-model="username">
-					<div style="color:red;"><span v-show="!checkUsername()">Username must be between 2 and 32 characters.</span></div>
+					<input id="username-input" type="text" v-model.trim="username">
+					<div style="color:red;"><span v-if="!checkUsername()">Username must be between 2 and 32 characters.</span></div>
 					<label for="channels-input">Channels: </label>
-					<input id="channels-input" type="text" v-model="channels">
-					<div style="color:red;"><span v-show="!checkChannels()">Whitespace-seperated channel names (2-32 chars per name) must be provided.</span></div>
+					<input id="channels-input" type="text" v-model.trim="channels">
+					<div style="color:red;"><span v-if="!checkChannels()">Whitespace-seperated channel names (2-32 chars per name) must be provided.</span></div>
 					<label for="server-input">ServerIP : Port </label>
-					<input id="server-input" type="text" v-model="server">
-					<div style="color:red;"><span v-show="!checkServer()">Server address must be provided.</span></div>
+					<input id="server-input" type="text" v-model.trim="server">
+					<div style="color:red;"><span v-if="!checkServer()">Server address must be provided.</span></div>
 					<input id="login-submit" type="submit" value="Login" @click.prevent="login()">
-					<div style="color:green;"><span v-show="loggedIn">Successfully logged in.</span></div>
+					<div style="color:green;"><span v-if="loggedIn">Successfully logged in.</span></div>
 				</form>
 				<!-- TODO: move all these buttons to the actual chat window etc -->
 				<button id="logout" type="button" @click="logout()">Log out</button>
@@ -32,10 +32,10 @@
 				<button id="leave-channel" type="button" @click="leaveChannel()">Leave a channel</button>
 			</div>
 
-			<div id="chat-wrapper" class="hide">
+			<div id="chat-wrapper" v-if="loggedIn">
 				<div id="title-bar-wrapper">
 					<div id="title-bar">
-						<p> <!-- something here --> </p>
+						<p> <!-- something here -->ello dis is main content </p>
 					</div>
 				</div>
 				<div id="main">

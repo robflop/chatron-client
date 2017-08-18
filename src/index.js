@@ -19,7 +19,7 @@ const app = new Vue({
 	},
 	methods: {
 		checkUsername() {
-			return this.username.trim().length >= 2 && this.username.trim().length <= 32;
+			return this.username.length >= 2 && this.username.length <= 32;
 		},
 
 		checkChannels() {
