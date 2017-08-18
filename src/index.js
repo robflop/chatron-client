@@ -1,9 +1,9 @@
 const app = new Vue({
 	el: '#app',
 	data: {
-		username: '',
-		channels: '',
-		server: '',
+		usernameInput: '',
+		channelsInput: '',
+		serverInput: '',
 		socket: null,
 		loggedIn: false,
 		user: { username: '', channels: {} },
@@ -20,27 +20,27 @@ const app = new Vue({
 	},
 	methods: {
 		checkUsername() {
-			return this.username.length >= 2 && this.username.length <= 32;
+			return this.usernameInput.length >= 2 && this.usernameInput.length <= 32;
 		},
 
 		checkChannels() {
-			if (!this.channels) return false;
-			return this.channels.split(' ').every(channel => channel.trim().length >= 2 && channel.trim().length <= 32);
+			if (!this.channelsInput) return false;
+			return this.channelsInput.split(' ').every(channel => channel.trim().length >= 2 && channel.trim().length <= 32);
 		},
 
 		checkServer() {
-			return Boolean(this.server);
+			return Boolean(this.serverInput);
 		},
 
 		login() {
 			if (!this.checkUsername() || !this.checkChannels() || !this.checkServer()) return;
 			if (this.loggedIn) return;
 
-			for (const channelName of this.channels.split(' ')) {
+			for (const channelName of this.channelsInput.split(' ')) {
 				this.user.channels[channelName] = { name: channelName };
 			}
-			this.user.username = this.username;
-			const host = this.server.match(/^https?:\/\//) ? this.server : `http://${this.server}`;
+			this.user.username = this.usernameInput;
+			const host = this.serverInput.match(/^https?:\/\//) ? this.serverInput : `http://${this.serverInput}`;
 			// prepend http if not present to connect properly
 
 			this.socket = io.connect(host);
@@ -54,6 +54,8 @@ const app = new Vue({
 					});
 					this.selectedChannel = Object.keys(this.user.channels)[0];
 					// set first channel as selected one by default
+					this.usernameInput = ''; this.channelsInput = ''; this.serverInput = '';
+					// reset input so old input isn't shown on logout
 					return this.loggedIn = true;
 				});
 			});

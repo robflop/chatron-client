@@ -11,6 +11,11 @@ body {
 	position: relative;
 }
 
+form > label, form > div, button {
+	-webkit-user-select: none;
+	user-select: none;
+}
+
 #chat-wrapper {
 	height: 100vh;
 	display: grid;
@@ -42,8 +47,6 @@ body {
 }
 
 #chat-wrapper ul > li {
-	-webkit-user-select: none;
-	user-select: none;
 	margin: 5px 0;
 }
 
@@ -65,4 +68,8 @@ body {
 
 #message-bar-wrapper {
 	grid-area: message-bar;
+}
+
+#logout-button-wrapper {
+	grid-area: logout;
 }

@@ -12,22 +12,19 @@
 			<div id="login-wrapper" v-if="!loggedIn">
 				<form id="login" method="post">
 					<label for="username-input">Username: </label>
-					<input id="username-input" type="text" v-model.trim="username">
+					<input id="username-input" type="text" v-model.trim="usernameInput">
 					<div style="color:red;"><span v-if="!checkUsername()">Username must be between 2 and 32 characters.</span></div>
 					<label for="channels-input">Channels: </label>
-					<input id="channels-input" type="text" v-model.trim="channels">
+					<input id="channels-input" type="text" v-model.trim="channelsInput">
 					<div style="color:red;"><span v-if="!checkChannels()">Whitespace-seperated channel names (2-32 chars per name) must be provided.</span></div>
-					<label for="server-input">ServerIP : Port </label>
-					<input id="server-input" type="text" v-model.trim="server">
+					<label for="server-input">Server address: </label>
+					<input id="server-input" type="text" v-model.trim="serverInput">
 					<div style="color:red;"><span v-if="!checkServer()">Server address must be provided.</span></div>
 					<input id="login-submit" type="submit" value="Login" @click.prevent="login()">
-					<div style="color:green;"><span v-if="loggedIn">Successfully logged in.</span></div>
 				</form>
+				<br>
+				<br>
 				<!-- TODO: move all these buttons to the actual chat window etc -->
-				<button id="logout" type="button" @click="logout()">Log out</button>
-				<div id="logout-notification"></div>
-				<br>
-				<br>
 				<button id="join-channel" type="button" @click="joinChannel()">Join a channel</button>
 				<button id="leave-channel" type="button" @click="leaveChannel()">Leave a channel</button>
 			</div>
@@ -52,6 +49,9 @@
 					<div id="chat-area">
 						<p> <!-- things here --> </p>
 					</div>
+				</div>
+				<div id="logout-button-wrapper">
+					<button id="logout" type="button" @click="logout()">Log out</button>
 				</div>
 			</div>
 		</div>
