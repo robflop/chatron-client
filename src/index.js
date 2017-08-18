@@ -6,6 +6,7 @@ const app = new Vue({
 		serverInput: '',
 		socket: null,
 		loggedIn: false,
+		error: '',
 		user: { username: '', channels: {} },
 		selectedChannel: ''
 	},
@@ -33,7 +34,7 @@ const app = new Vue({
 
 		login() {
 			if (!this.checkUsername() || !this.checkChannels() || !this.checkServer()) return;
-			if (this.loggedIn) return;
+			if (this.loggedIn) return this.error = { message: 'You are already logged in.' };
 
 			for (const channelName of this.channelsInput.split(' ')) {
 				this.user.channels[channelName] = { name: channelName };
@@ -47,21 +48,24 @@ const app = new Vue({
 			this.socket.on('connect', () => {
 				this.socket.emit('login', this.user);
 				this.socket.on('login', loginData => {
-					if (loginData.error) return console.log(loginData.error);
+					if (loginData.error) {
+						this.user = { username: '', channels: {} }; // reset to empty user
+						return this.error = loginData.error;
+					}
 					Object.values(loginData.channels).forEach(channel => {
 						this.user.channels[channel.name] = channel;
 					});
 					this.selectedChannel = Object.keys(this.user.channels)[0];
 					// set first channel as selected one by default
-					this.usernameInput = ''; this.channelsInput = ''; this.serverInput = '';
-					// reset input so old input isn't shown on logout
+					this.clearInput();
+					// reset input & errors so old input isn't shown on logout
 					return this.loggedIn = true;
 				});
 			});
 		},
 
 		logout() {
-			if (!this.loggedIn) return;
+			if (!this.loggedIn) return this.error = { message: 'You are not logged in.' };
 			this.socket.emit('logout', this.user);
 			this.socket.on('logout', () => {
 				this.loggedIn = false;
@@ -100,6 +104,13 @@ const app = new Vue({
 				name += chars.charAt(Math.floor(Math.random() * chars.length));
 			}
 			return name;
+		},
+
+		clearInput() {
+			this.usernameInput = '';
+			this.channelsInput = '';
+			this.serverInput = '';
+			this.error = '';
 		}
 	}
 });

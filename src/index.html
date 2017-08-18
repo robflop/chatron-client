@@ -22,8 +22,7 @@
 					<div style="color:red;"><span v-if="!checkServer()">Server address must be provided.</span></div>
 					<input id="login-submit" type="submit" value="Login" @click.prevent="login()">
 				</form>
-				<br>
-				<br>
+				<p style="color:red" v-if="error"> {{ error.message }} </p>
 				<!-- TODO: move all these buttons to the actual chat window etc -->
 				<button id="join-channel" type="button" @click="joinChannel()">Join a channel</button>
 				<button id="leave-channel" type="button" @click="leaveChannel()">Leave a channel</button>
