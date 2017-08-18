@@ -21,7 +21,7 @@
 					<input id="server-input" type="text" v-model="server">
 					<div style="color:red;"><span v-show="!checkServer()">Server address must be provided.</span></div>
 					<input id="login-submit" type="submit" value="Login" @click.prevent="login()">
-					<div style="color:red;"><span v-show="loggedIn">You are already logged in.</span></div>
+					<div style="color:green;"><span v-show="loggedIn">Successfully logged in.</span></div>
 				</form>
 				<!-- TODO: move all these buttons to the actual chat window etc -->
 				<button id="logout" type="button" @click="logout()">Log out</button>

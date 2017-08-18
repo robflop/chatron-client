@@ -33,6 +33,7 @@ const app = new Vue({
 
 		login() {
 			if (!this.checkUsername() || !this.checkChannels() || !this.checkServer()) return;
+			if (this.loggedIn) return;
 
 			for (const channelName of this.channels.split(' ')) {
 				this.user.channels[channelName] = { name: channelName };
