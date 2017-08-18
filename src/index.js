@@ -13,9 +13,8 @@ const app = new Vue({
 		window.addEventListener('beforeunload', () => {
 			if (app.loggedIn) {
 				app.socket.emit('logout', app.user);
-				app.socket.disconnect();
+				return app.socket.disconnect();
 			}
-			return process.exit();
 		});
 	},
 	methods: {
