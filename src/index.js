@@ -8,12 +8,14 @@ const app = new Vue({
 		socket: null,
 		loggedIn: false
 	},
-	beforeDestroy: () => {
-		if (loggedIn) {
-			this.socket.emit('logout', user);
-			this.socket.disconnect();
-		}
-		return process.exit();
+	mounted: () => {
+		window.addEventListener('beforeunload', () => {
+			if (app.loggedIn) {
+				app.socket.emit('logout', app.user);
+				app.socket.disconnect();
+			}
+			return process.exit();
+		});
 	},
 	methods: {
 		checkUsername() {
@@ -58,7 +60,7 @@ const app = new Vue({
 			this.socket.emit('logout', this.user);
 			this.socket.on('logout', () => {
 				this.loggedIn = false;
-				this.user = { username: '', channels: {} };
+				this.user = { username: '', channels: {} }; // reset to empty user
 				return this.socket.disconnect();
 			});
 		},
