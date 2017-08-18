@@ -44,7 +44,6 @@ const app = new Vue({
 			this.socket.on('connect', () => {
 				this.socket.emit('login', this.user);
 				this.socket.on('login', loginData => {
-					console.log(loginData);
 					if (loginData.error) return console.log(loginData.error);
 					Object.values(loginData.channels).forEach(channel => {
 						this.user.channels[channel.name] = channel;
@@ -56,10 +55,10 @@ const app = new Vue({
 
 		logout() {
 			if (!this.loggedIn) return;
-			this.socket.emit('logout', user);
+			this.socket.emit('logout', this.user);
 			this.socket.on('logout', () => {
 				this.loggedIn = false;
-				this.user = {};
+				this.user = { username: '', channels: {} };
 				return this.socket.disconnect();
 			});
 		},
