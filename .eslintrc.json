@@ -79,7 +79,7 @@
 	"max-len": ["error", 150],
     "max-depth": "error",
     "max-nested-callbacks": ["error", { "max": 8 }],
-    "max-statements-per-line": ["error", { "max": 2 }],
+    "max-statements-per-line": ["error", { "max": 3 }],
     "new-cap": "off",
     "no-array-constructor": "error",
     "no-inline-comments": "off",
