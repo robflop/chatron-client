@@ -9,11 +9,12 @@
   },
   "devDependencies": {
 	"electron": "^1.7.5",
-    "eslint": "^4.4.1",
+	"eslint": "^4.4.1",
+	"htmlhint": "^0.9.13",
     "vue-devtools": "^3.1.6"
   },
   "scripts": {
-    "test": "eslint src"
+    "test": "eslint src && htmlhint"
   },
   "repository": {
     "type": "git",
