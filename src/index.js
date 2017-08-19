@@ -8,7 +8,33 @@ const app = new Vue({
 		loggedIn: false,
 		error: '',
 		user: { username: '', channels: {} },
-		selectedChannel: ''
+		selectedChannel: '',
+		messages: {
+			abc: [
+				{
+					timestamp: '13:37',
+					author: 'someone',
+					content: 'very very very very long test message that may overflow the area it has, or maybe not i do not know'
+				},
+				{
+					timestamp: '13:38',
+					author: 'system',
+					content: 'ban incoming'
+				}
+			],
+			def: [
+				{
+					timestamp: '04:46',
+					author: 'dudey',
+					content: 'hi am dudey nice 2 meet u'
+				},
+				{
+					timestamp: '04:50',
+					author: 'rudey',
+					content: 'lol go away nerd, kthxbye'
+				}
+			]
+		}
 	},
 	mounted: () => {
 		window.addEventListener('beforeunload', () => {
@@ -45,11 +71,20 @@ const app = new Vue({
 
 			this.socket = io.connect(host);
 
+			this.socket.on('connect_error', error => {
+				this.user = { username: '', channels: {} }; // reset to empty user
+				this.socket.disconnect(); this.socket = null;
+				// reset socket so it can be properly re-established next try
+				return this.error = { message: 'An error occurred connecting to the server.' };
+			});
+
 			this.socket.on('connect', () => {
 				this.socket.emit('login', this.user);
 				this.socket.on('login', loginData => {
 					if (loginData.error) {
 						this.user = { username: '', channels: {} }; // reset to empty user
+						this.socket.disconnect(); this.socket = null;
+						// reset socket so it can be properly re-established next try
 						return this.error = loginData.error;
 					}
 					Object.values(loginData.channels).forEach(channel => {
@@ -57,9 +92,18 @@ const app = new Vue({
 					});
 					this.selectedChannel = Object.keys(this.user.channels)[0];
 					// set first channel as selected one by default
-					this.clearInput();
-					// reset input & errors so old input isn't shown on logout
+					this.clearData();
+					// reset input & errors so it won't display on logout
 					return this.loggedIn = true;
+				});
+				this.socket.on('channelUserEnter', user => {
+					// soon
+				});
+				this.socket.on('channelUserLeave', user => {
+					// soon
+				});
+				this.socket.on('message', message => {
+					// soon
 				});
 			});
 		},
@@ -106,7 +150,7 @@ const app = new Vue({
 			return name;
 		},
 
-		clearInput() {
+		clearData() {
 			this.usernameInput = '';
 			this.channelsInput = '';
 			this.serverInput = '';

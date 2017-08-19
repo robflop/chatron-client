@@ -1,3 +1,5 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+
 html {
     height: 100%;
     width: 100%;
@@ -9,6 +11,7 @@ body {
     min-height: 100%;
     vertical-align: middle;
 	position: relative;
+	font-family: "Open Sans"
 }
 
 #login-wrapper {
@@ -29,32 +32,77 @@ body {
 #chat-wrapper {
 	height: 100vh;
 	display: grid;
-	grid-template-columns: 10% 80% 10%;
-	grid-template-rows: 10% 80% 10%;
+	grid-template-columns: 135px auto 135px;
+	grid-template-rows: 5% 90% 5%;
 	grid-template-areas: "title-bar title-bar title-bar"
 						 "channel-list chat-area user-list"
 						 "footer message-bar logout"
 }
 
 #chat-wrapper ul {
-	padding: 1vh;
+	margin: 0px;
 	list-style-type: none;
 }
 
-#chat-wrapper ul > li {
-	margin: 5px 0;
+#title-bar > p {
+	margin: 1vh 0px 1vh 0px;
+}
+
+#chat-wrapper #user-list {
+	padding-right: 1vh;
+	padding-left: 0px;
+}
+
+#chat-wrapper #channel-list {
+	padding-left: 1vh;
+	padding-right: 0px;
 }
 
 #title-bar-wrapper {
 	grid-area: title-bar;
+	text-align: center;
 }
 
 #channel-list-wrapper {
 	grid-area: channel-list;
 }
 
+#channel-list > li:before {
+	content: '💬';
+	padding-right: 5px;
+}
+
+#user-list > li:before {
+	content: '👺';
+	padding-right: 5px;
+}
+
+#user-list > li, #channel-list > li {
+	max-width: 135px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
 #chat-area-wrapper {
 	grid-area: chat-area;
+	display: grid;
+	grid-template-columns: auto;
+	grid-template-rows: 100%;
+	grid-template-areas: "message-info message-content"
+}
+
+#chat-area-wrapper .message-info + .message-info, .message-content + .message-content {
+	margin-top: 20px;
+}
+
+.message-info {
+	grid-area: message-info;
+	padding-right: 5px;
+}
+
+.message-content {
+	grid-area: message-content;
 }
 
 #user-list-wrapper {
