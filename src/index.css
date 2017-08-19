@@ -67,12 +67,12 @@ body {
 	grid-area: channel-list;
 }
 
-#channel-list > li:before {
+#channel-list > li::before {
 	content: '💬';
 	padding-right: 5px;
 }
 
-#user-list > li:before {
+#user-list > li::before {
 	content: '👺';
 	padding-right: 5px;
 }
@@ -86,23 +86,8 @@ body {
 
 #chat-area-wrapper {
 	grid-area: chat-area;
-	display: grid;
-	grid-template-columns: auto;
-	grid-template-rows: 100%;
-	grid-template-areas: "message-info message-content"
-}
-
-#chat-area-wrapper .message-info + .message-info, .message-content + .message-content {
-	margin-top: 20px;
-}
-
-.message-info {
-	grid-area: message-info;
-	padding-right: 5px;
-}
-
-.message-content {
-	grid-area: message-content;
+	display: block;
+	font-size: 13px;
 }
 
 #user-list-wrapper {

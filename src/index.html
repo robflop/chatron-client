@@ -45,8 +45,10 @@
 					</ul>
 				</div>
 				<div id="chat-area-wrapper">
-					<div class="message-info" v-for="message in messages[selectedChannel]">[{{ message.timestamp }}] {{ message.author }}:</div>
-					<div class="message-content" v-for="message in messages[selectedChannel]">{{ message.content }}</div>
+					<div class="message-wrapper" v-for="message in messages[selectedChannel]">
+						<span class="message-info">[{{ message.timestamp }}] {{ message.author }}:</span>
+						<span class="message-content">{{ message.content }}</span>
+					</div>
 				</div>
 				<div id="logout-button-wrapper">
 					<button id="logout" type="button" @click="logout()">Log out</button>
