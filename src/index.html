@@ -22,7 +22,7 @@
 					<div style="color:red;"><span v-if="!checkServer()">Server address must be provided.</span></div>
 					<input id="login-submit" type="submit" value="Login" @click.prevent="login()">
 				</form>
-				<p style="color:red" v-if="error"> {{ error.message }} </p>
+				<p style="color:red" v-if="error">{{ error.message }}</p>
 				<!-- TODO: move all these buttons to the actual chat window etc -->
 				<button id="join-channel" type="button" @click="joinChannel()">Join a channel</button>
 				<button id="leave-channel" type="button" @click="leaveChannel()">Leave a channel</button>
@@ -31,23 +31,22 @@
 			<div id="chat-wrapper" v-if="loggedIn">
 				<div id="title-bar-wrapper">
 					<div id="title-bar">
-						<p> Very cool and useful Chatron titlebar that will display nice things later on. Maybe. </p>
+						<p>Very cool and useful Chatron titlebar that will display nice things later on. Maybe.</p>
 					</div>
 				</div>
 				<div id="channel-list-wrapper">
 					<ul id="channel-list">
-						<li v-for="channel in user.channels" @click="switchChannel(channel.name)"> 💬 {{ channel.name }} </li>
+						<li class="channel" v-for="channel in user.channels" @click="switchChannel(channel.name)">{{ channel.name }}</li>
 					</ul>
 				</div>
 				<div id="user-list-wrapper">
 					<ul id="user-list">
-						<li v-for="user of user.channels[selectedChannel].users"> 👺 {{ user }} </li>
+						<li class="user" v-for="user of user.channels[selectedChannel].users">{{ user }}</li>
 					</ul>
 				</div>
 				<div id="chat-area-wrapper">
-					<div id="chat-area">
-						<p> <!-- things here --> </p>
-					</div>
+					<div class="message-info" v-for="message in messages[selectedChannel]">[{{ message.timestamp }}] {{ message.author }}:</div>
+					<div class="message-content" v-for="message in messages[selectedChannel]">{{ message.content }}</div>
 				</div>
 				<div id="logout-button-wrapper">
 					<button id="logout" type="button" @click="logout()">Log out</button>
