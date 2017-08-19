@@ -101,3 +101,7 @@ body {
 #logout-button-wrapper {
 	grid-area: logout;
 }
+
+#logout {
+	margin: 0px 35px 0px 35px;
+}
