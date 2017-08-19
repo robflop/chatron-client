@@ -20,6 +20,11 @@ const app = new Vue({
 					timestamp: '13:38',
 					author: 'system',
 					content: 'ban incoming'
+				},
+				{
+					timestamp: '22:04',
+					author: 'someonewithareallylongusername',
+					content: 'nothin\' to say to you',
 				}
 			],
 			def: [
