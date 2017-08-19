@@ -36,12 +36,12 @@
 				</div>
 				<div id="channel-list-wrapper">
 					<ul id="channel-list">
-						<li class="channel" v-for="channel in user.channels" @click="switchChannel(channel.name)">{{ channel.name }}</li>
+						<li class="channel" v-for="channel in user.channels" @click="switchChannel(channel.name)" v-bind:title="channel.name">{{ channel.name }}</li>
 					</ul>
 				</div>
 				<div id="user-list-wrapper">
 					<ul id="user-list">
-						<li class="user" v-for="user of user.channels[selectedChannel].users">{{ user }}</li>
+						<li class="user" v-for="user of user.channels[selectedChannel].users" v-bind:title="user">{{ user }}</li>
 					</ul>
 				</div>
 				<div id="chat-area-wrapper">
