@@ -112,9 +112,9 @@ const app = new Vue({
 			if (!this.loggedIn) return this.error = { message: 'You are not logged in.' };
 			this.socket.emit('logout', this.user);
 			this.socket.on('logout', () => {
-				this.loggedIn = false;
+				this.socket.disconnect(); this.socket = null;
 				this.user = { username: '', channels: {} }; // reset to empty user
-				return this.socket.disconnect();
+				return this.loggedIn = false;
 			});
 		},
 
