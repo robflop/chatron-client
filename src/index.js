@@ -69,11 +69,11 @@ const app = new Vue({
 			const host = this.serverInput.match(/^https?:\/\//) ? this.serverInput : `http://${this.serverInput}`;
 			// prepend http if not present to connect properly
 
-			this.socket = io.connect(host);
+			if (!this.socket) this.socket = io.connect(host);
 
 			this.socket.on('connect_error', error => {
 				this.user = { username: '', channels: {} }; // reset to empty user
-				this.socket.disconnect(); this.socket = null;
+				if (this.socket) { this.socket.disconnect(); this.socket = null; }
 				// reset socket so it can be properly re-established next try
 				return this.error = { message: 'An error occurred connecting to the server.' };
 			});
@@ -83,7 +83,7 @@ const app = new Vue({
 				this.socket.on('login', loginData => {
 					if (loginData.error) {
 						this.user = { username: '', channels: {} }; // reset to empty user
-						this.socket.disconnect(); this.socket = null;
+						if (this.socket) { this.socket.disconnect(); this.socket = null; }
 						// reset socket so it can be properly re-established next try
 						return this.error = loginData.error;
 					}
