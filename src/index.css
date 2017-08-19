@@ -65,11 +65,21 @@ body {
 
 #channel-list-wrapper {
 	grid-area: channel-list;
+    border-top: solid;
+	border-bottom: solid;
+	overflow: auto;
 }
 
 #channel-list > li::before {
 	content: '💬';
 	padding-right: 5px;
+}
+
+#user-list-wrapper {
+	grid-area: user-list;
+    border-top: solid;
+    border-bottom: solid;
+	overflow: auto;
 }
 
 #user-list > li::before {
@@ -88,10 +98,7 @@ body {
 	grid-area: chat-area;
 	display: block;
 	font-size: 13px;
-}
-
-#user-list-wrapper {
-	grid-area: user-list;
+    border-style: solid;
 }
 
 #message-bar-wrapper {
