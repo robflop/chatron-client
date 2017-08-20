@@ -4,48 +4,18 @@ const app = new Vue({
 		usernameInput: '',
 		channelsInput: '',
 		serverInput: '',
-		socket: null,
+		socket: '',
 		loggedIn: false,
 		error: '',
 		user: { username: '', channels: {} },
 		messageContent: '',
 		currentChannel: '',
 		channelChoice: '',
-		messages: {
-			abc: [
-				{
-					timestamp: '13:37',
-					author: 'someone',
-					content: 'very very very very long test message that may overflow the area it has, or maybe not i do not know'
-				},
-				{
-					timestamp: '13:38',
-					author: 'system',
-					content: 'ban incoming'
-				},
-				{
-					timestamp: '22:04',
-					author: 'someonewithareallylongusername',
-					content: 'nothin\' to say to you',
-				},
-			],
-			def: [
-				{
-					timestamp: '04:46',
-					author: 'dudey',
-					content: 'hi am dudey nice 2 meet u'
-				},
-				{
-					timestamp: '04:50',
-					author: 'rudey',
-					content: 'lol go away nerd, kthxbye'
-				}
-			]
-		}
+		messages: {}
 	},
-	mounted: () => {
+	mounted() {
 		window.addEventListener('beforeunload', () => {
-			if (app.loggedIn && app.socket) {
+			if (app.loggedIn && app.socket.connected) {
 				app.socket.emit('logout', app.user);
 				return app.socket.disconnect();
 			}
@@ -76,45 +46,8 @@ const app = new Vue({
 			const host = this.serverInput.match(/^https?:\/\//) ? this.serverInput : `http://${this.serverInput}`;
 			// prepend http if not present to connect properly
 
-			if (!this.socket) this.socket = io.connect(host);
-
-			this.socket.on('connect_error', error => {
-				this.user = { username: '', channels: {} }; // reset to empty user
-				if (this.socket) { this.socket.disconnect(); this.socket = null; }
-				// reset socket so it can be properly re-established next try
-				return this.error = { message: 'An error occurred connecting to the server.' };
-			});
-
-			this.socket.on('connect', () => {
-				this.socket.emit('login', this.user);
-				this.socket.on('login', loginData => {
-					if (loginData.error) {
-						this.user = { username: '', channels: {} }; // reset to empty user
-						if (this.socket) { this.socket.disconnect(); this.socket = null; }
-						// reset socket so it can be properly re-established next try
-						return this.error = loginData.error;
-					}
-					Object.values(loginData.channels).forEach(channel => this.user.channels[channel.name] = channel);
-					this.currentChannel = Object.keys(this.user.channels)[0];
-					// set first channel as selected one by default
-					this.clearData('login');
-					// reset input & errors so it won't display on logout
-					return this.loggedIn = true;
-				});
-				this.socket.on('channelUserEnter', (user, channel) => {
-					if (!this.user.channels.hasOwnProperty(channel.name)) return;
-
-					this.user.channels[channel.name].users.push(user.username);
-					app.$forceUpdate(); // can't seem to get it to update otherwise
-				});
-				this.socket.on('channelUserLeave', (user, channel) => {
-					if (!this.user.channels.hasOwnProperty(channel.name)) return;
-
-					const index = this.user.channels[channel.name].users.indexOf(user.username);
-					this.user.channels[channel.name].users.splice(index, 1);
-					app.$forceUpdate(); // can't seem to get it to update otherwise
-				});
-			});
+			this.socket = io(host);
+			attachListeners(this.socket);
 		},
 
 		joinChannel(channelChoice) {
@@ -127,40 +60,21 @@ const app = new Vue({
 			}
 
 			this.socket.emit('channelJoin', this.user, channels);
-			this.socket.on('channelJoin', channelData => {
-				console.log(channelData);
-				if (channelData.error) return this.error = channelData.error;
-				channelData.channels.forEach(channel => this.user.channels[channel.name] = channel);
-				this.switchChannel(channelData.channels[0].name);
-				// switch to first new channel
-				return this.channelChoice = '';
-			});
 		},
 
 		leaveChannel(channelChoice) {
 			if (!this.loggedIn) return;
 			if (!this.checkChannels(channelChoice)) return this.error = { message: 'Channel names must be 2-32 characters long.' };
-			if (Object.keys(this.user.channels).length === 1) return this.error = { message: 'Cannot leave last channel.' };
+			if (channelChoice === Object.keys(this.user.channels)[0] && Object.keys(this.user.channels).length === 1) {
+				return this.error = { message: 'Cannot leave last channel.' };
+			}
 
 			const channels = [];
 			for (const channelName of channelChoice.split(' ')) {
-				if (!this.user.channels.hasOwnProperty(channelName)) continue;
-				// skip channels the user isn't in
 				channels.push({ name: channelName });
 			}
 
 			this.socket.emit('channelLeave', this.user, channels);
-			this.socket.on('channelLeave', channelData => {
-				console.log(channelData);
-				if (channelData.error) return this.error = channelData.error;
-				channelData.channels.forEach(channel => {
-					if (this.currentChannel === channel.name) this.switchChannel(Object.keys(this.user.channels)[0]);
-					// move away from channel being deleted if it's selected
-					Vue.delete(this.user.channels, channel.name);
-				});
-
-				return this.channelChoice = '';
-			});
 		},
 
 		switchChannel(channel) {
@@ -170,6 +84,7 @@ const app = new Vue({
 
 		sendMessage(messageContent) {
 			if (!this.loggedIn) return;
+			if (messageContent.length > 2000) return this.error = { message: 'Message content may not exceed 2000 characters.' };
 
 			function currentTime() {
 				function pad(number) { return (number < 10 ? '0' : '') + number; }
@@ -179,29 +94,17 @@ const app = new Vue({
 
 			const message = {
 				content: messageContent,
-				author: this.user,
+				author: { username: this.user.username },
 				timestamp: currentTime(),
-				channel: this.currentChannel
+				channel: { name: this.currentChannel }
 			};
 
 			this.socket.emit('message', message);
-			this.socket.on('message', message => {
-				if (!this.user.channels.hasOwnProperty(message.channel.name)) return;
-				// in case a message the user is not on slips through
-				if (this.messages[message.channel.name].includes(message)) return;
-				// avoid duplicate messages
-				this.messageContent = '';
-				return this.messages[message.channel.name].push(message);
-			});
 		},
 
 		logout() {
 			if (!this.socket) return this.loggedIn = false;
 			this.socket.emit('logout', this.user);
-			this.socket.on('logout', () => {
-				this.clearData('logout');
-				return this.loggedIn = false;
-			});
 		},
 
 		clearData(procedure) {
@@ -213,7 +116,7 @@ const app = new Vue({
 				// reset all values that were used during login
 			}
 			else if (procedure === 'logout') {
-				this.socket.disconnect(); this.socket = null;
+				this.socket.disconnect();
 				this.user = { username: '', channels: {} };
 				this.error = '';
 				this.messageContent = '';
@@ -223,3 +126,91 @@ const app = new Vue({
 		}
 	}
 });
+
+function attachListeners(emitter) {
+	emitter.on('connect', () => {
+		emitter.emit('login', app.user);
+	});
+
+	emitter.on('connect_error', error => {
+		app.user = { username: '', channels: {} }; // reset to empty user
+		app.socket.disconnect();
+		// reset socket so it can be properly re-established next try
+		return app.error = { message: 'An error occurred connecting to the server.' };
+	});
+
+	emitter.on('disconnect', () => {
+		app.clearData('logout');
+		app.error = { message: 'Lost connection to the server.' };
+		return app.loggedIn = false;
+	});
+
+	emitter.on('login', loginData => {
+		if (loginData.error) {
+			app.user = { username: '', channels: {} }; // reset to empty user
+			if (app.socket) { app.socket.disconnect(); }
+			// reset socket so it can be properly re-established next try
+			return app.error = loginData.error;
+		}
+		Object.values(loginData.channels).forEach(channel => {
+			app.user.channels[channel.name] = channel;
+			app.messages[channel.name] = [];
+		});
+		app.currentChannel = Object.keys(app.user.channels)[0];
+		// set first channel as selected one by default
+		app.clearData('login');
+		// reset input & errors so it won't display on logout
+		return app.loggedIn = true;
+	});
+
+	emitter.on('channelJoin', channelData => {
+		if (channelData.error) return app.error = channelData.error;
+		channelData.channels.forEach(channel => {
+			app.user.channels[channel.name] = channel;
+			if (!app.messages[channel.name]) app.messages[channel.name] = [];
+		});
+		app.switchChannel(channelData.channels[0].name);
+		// switch to first new channel
+		return app.channelChoice = '';
+	});
+
+	emitter.on('channelLeave', channelData => {
+		if (channelData.error) return app.error = channelData.error;
+		channelData.channels.forEach(channel => {
+			if (app.currentChannel === channel.name) app.switchChannel(Object.keys(app.user.channels)[0]);
+			// move away from channel being deleted if it's selected
+			Vue.delete(app.user.channels, channel.name);
+			// keeping messages in case user joins back or so
+		});
+
+		return app.channelChoice = '';
+	});
+
+	emitter.on('message', message => {
+		if (!app.user.channels.hasOwnProperty(message.channel.name)) return;
+		// in case a message for a channel the user is not on slips through
+		if (message.error) return app.error = message.error;
+		app.messageContent = '';
+		app.messages[message.channel.name].push(message);
+		return app.$forceUpdate(); // can't seem to get it to update otherwise
+	});
+
+	emitter.on('channelUserEnter', (user, channel) => {
+		if (!app.user.channels.hasOwnProperty(channel.name)) return;
+
+		app.user.channels[channel.name].users.push(user.username);
+		app.$forceUpdate(); // can't seem to get it to update otherwise
+	});
+	emitter.on('channelUserLeave', (user, channel) => {
+		if (!app.user.channels.hasOwnProperty(channel.name)) return;
+
+		const index = app.user.channels[channel.name].users.indexOf(user.username);
+		app.user.channels[channel.name].users.splice(index, 1);
+		app.$forceUpdate(); // can't seem to get it to update otherwise
+	});
+
+	emitter.on('logout', () => {
+		app.clearData('logout');
+		return app.loggedIn = false;
+	});
+}
