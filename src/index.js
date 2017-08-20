@@ -8,7 +8,9 @@ const app = new Vue({
 		loggedIn: false,
 		error: '',
 		user: { username: '', channels: {} },
-		selectedChannel: '',
+		messageContent: '',
+		currentChannel: '',
+		channelChoice: '',
 		messages: {
 			abc: [
 				{
@@ -43,7 +45,7 @@ const app = new Vue({
 	},
 	mounted: () => {
 		window.addEventListener('beforeunload', () => {
-			if (app.loggedIn) {
+			if (app.loggedIn && app.socket) {
 				app.socket.emit('logout', app.user);
 				return app.socket.disconnect();
 			}
@@ -54,9 +56,9 @@ const app = new Vue({
 			return this.usernameInput.length >= 2 && this.usernameInput.length <= 32;
 		},
 
-		checkChannels() {
-			if (!this.channelsInput) return false;
-			return this.channelsInput.split(' ').every(channel => channel.trim().length >= 2 && channel.trim().length <= 32);
+		checkChannels(input) {
+			if (!input) return false;
+			return input.split(' ').every(channel => channel.trim().length >= 2 && channel.trim().length <= 32);
 		},
 
 		checkServer() {
@@ -64,7 +66,7 @@ const app = new Vue({
 		},
 
 		login() {
-			if (!this.checkUsername() || !this.checkChannels() || !this.checkServer()) return;
+			if (!this.checkUsername() || !this.checkChannels(this.channelsInput) || !this.checkServer()) return;
 			if (this.loggedIn) return this.error = { message: 'You are already logged in.' };
 
 			for (const channelName of this.channelsInput.split(' ')) {
@@ -92,10 +94,8 @@ const app = new Vue({
 						// reset socket so it can be properly re-established next try
 						return this.error = loginData.error;
 					}
-					Object.values(loginData.channels).forEach(channel => {
-						this.user.channels[channel.name] = channel;
-					});
-					this.selectedChannel = Object.keys(this.user.channels)[0];
+					Object.values(loginData.channels).forEach(channel => this.user.channels[channel.name] = channel);
+					this.currentChannel = Object.keys(this.user.channels)[0];
 					// set first channel as selected one by default
 					this.clearData();
 					// reset input & errors so it won't display on logout
@@ -107,52 +107,96 @@ const app = new Vue({
 				this.socket.on('channelUserLeave', user => {
 					// soon
 				});
-				this.socket.on('message', message => {
-					// soon
+			});
+		},
+
+		joinChannel(channelChoice) {
+			if (!this.loggedIn) return;
+			if (!this.checkChannels(channelChoice)) return this.error = { message: 'Channel names must be 2-32 characters long.' };
+
+			const channels = [];
+			for (const channelName of channelChoice.split(' ')) {
+				channels.push({ name: channelName });
+			}
+
+			this.socket.emit('channelJoin', this.user, channels);
+			this.socket.on('channelJoin', channelData => {
+				console.log(channelData);
+				if (channelData.error) return this.error = channelData.error;
+				channelData.channels.forEach(channel => this.user.channels[channel.name] = channel);
+				this.switchChannel(channelData.channels[0].name);
+				// switch to first new channel
+				return this.channelChoice = '';
+			});
+		},
+
+		leaveChannel(channelChoice) {
+			if (!this.loggedIn) return;
+
+			const channels = [];
+			for (const channelName of channelChoice.split(' ')) {
+				if (!this.user.channels.hasOwnProperty(channelName)) continue;
+				// skip channels the user isn't in
+				channels.push({ name: channelName });
+			}
+
+			this.socket.emit('channelLeave', this.user, channels);
+			this.socket.on('channelLeave', channelData => {
+				console.log(channelData);
+				if (channelData.error) return this.error = channelData.error;
+				channelData.channels.forEach(channel => {
+					if (this.currentChannel === channel.name) this.switchChannel(Object.keys(this.user.channels)[0]);
+					// move away from channel being deleted if it's selected
+					Vue.delete(this.user.channels, channel.name);
 				});
-			});
-		},
 
-		logout() {
-			if (!this.loggedIn) return this.error = { message: 'You are not logged in.' };
-			this.socket.emit('logout', this.user);
-			this.socket.on('logout', () => {
-				this.socket.disconnect(); this.socket = null;
-				this.user = { username: '', channels: {} }; // reset to empty user
-				return this.loggedIn = false;
-			});
-		},
-
-		joinChannel() {
-			if (!this.loggedIn) return;
-			const channel = this.randomChannel();
-			this.socket.emit('channelJoin', this.user, { name: channel });
-			this.socket.on('channelJoin', channel => {
-				this.user.channels[channel.name] = channel;
-			});
-		},
-
-		leaveChannel() {
-			if (!this.loggedIn) return;
-			const channel = this.user.channels[Math.floor(Math.random() * user.channels.length)];
-			this.socket.emit('channelLeave', this.user, { name: channel });
-			this.socket.on('channelLeave', channel => {
-				delete this.user.channels[channel.name];
+				return this.channelChoice = '';
 			});
 		},
 
 		switchChannel(channel) {
-			console.log(`${channel} pls, ty`);
-			this.selectedChannel = channel;
+			this.currentChannel = channel;
+			console.log(`Switched to channel '${channel}'.`);
+			const container = this.$el.querySelector('#messages');
+			container.scrollTop = container.scrollHeight;
 		},
 
-		randomChannel() {
-			let name = '';
-			const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-			for (let i = 0; i < 5; i++) {
-				name += chars.charAt(Math.floor(Math.random() * chars.length));
+		sendMessage(messageContent) {
+			if (!this.loggedIn) return;
+
+			function currentTime() {
+				function pad(number) { return (number < 10 ? '0' : '') + number; }
+
+				return `${pad(new Date().getHours())}:${pad(new Date().getMinutes())}`;
 			}
-			return name;
+
+			const message = {
+				content: messageContent,
+				author: this.user,
+				timestamp: currentTime(),
+				channel: this.currentChannel
+			};
+
+			this.socket.emit('message', message);
+			this.socket.on('message', message => {
+				if (!this.user.channels.hasOwnProperty(message.channel.name)) return;
+				// in case a message the user is not on slips through
+				if (this.messages[message.channel.name].includes(message)) return;
+				// avoid duplicate messages
+				this.messageContent = '';
+				return this.messages[message.channel.name].push(message);
+			});
+		},
+
+		logout() {
+			if (!this.socket) return this.loggedIn = false;
+			this.socket.emit('logout', this.user);
+			this.socket.on('logout', () => {
+				this.socket.disconnect(); this.socket = null;
+				this.user = { username: '', channels: {} }; // reset to empty user
+				this.error = ''; // reset error if there was any while logged in
+				return this.loggedIn = false;
+			});
 		},
 
 		clearData() {
