@@ -16,16 +16,13 @@
 					<div style="color:red;"><span v-if="!checkUsername()">Username must be between 2 and 32 characters.</span></div>
 					<label for="channels-input">Channels: </label>
 					<input id="channels-input" type="text" v-model.trim="channelsInput">
-					<div style="color:red;"><span v-if="!checkChannels()">Whitespace-seperated channel names (2-32 chars per name) must be provided.</span></div>
+					<div style="color:red;"><span v-if="!checkChannels(this.channelsInput)">Whitespace-seperated channel names (2-32 chars per name) must be provided.</span></div>
 					<label for="server-input">Server address: </label>
 					<input id="server-input" type="text" v-model.trim="serverInput">
 					<div style="color:red;"><span v-if="!checkServer()">Server address must be provided.</span></div>
 					<input id="login-submit" type="submit" value="Login" @click.prevent="login()">
 				</form>
 				<p style="color:red" v-if="error">{{ error.message }}</p>
-				<!-- TODO: move all these buttons to the actual chat window etc -->
-				<button id="join-channel" type="button" @click="joinChannel()">Join a channel</button>
-				<button id="leave-channel" type="button" @click="leaveChannel()">Leave a channel</button>
 			</div>
 
 			<div id="chat-wrapper" v-if="loggedIn">
@@ -36,19 +33,29 @@
 				</div>
 				<div id="channel-list-wrapper">
 					<ul id="channel-list">
-						<li class="channel" v-for="channel in user.channels" @click="switchChannel(channel.name)" v-bind:title="channel.name">{{ channel.name }}</li>
+						<li class="channel" v-for="channel in user.channels" @click="switchChannel(channel.name)" :title="channel.name">{{ channel.name }}</li>
 					</ul>
 				</div>
 				<div id="user-list-wrapper">
 					<ul id="user-list">
-						<li class="user" v-for="user of user.channels[selectedChannel].users" v-bind:title="user">{{ user }}</li>
+						<li class="user" v-for="user of user.channels[currentChannel].users" :title="user">{{ user }}</li>
 					</ul>
 				</div>
 				<div id="chat-area-wrapper">
-					<div class="message-wrapper" v-for="message in messages[selectedChannel]">
-						<span class="message-info">[{{ message.timestamp }}] {{ message.author }}:</span>
-						<span class="message-content">{{ message.content }}</span>
+					<div id="messages" >
+						<div class="message-wrapper" v-for="message in messages[currentChannel]">
+							<span class="message-info">[{{ message.timestamp }}] {{ message.author }}:</span>
+							<span class="message-content">{{ message.content }}</span>
+						</div>
 					</div>
+					<div id="message-bar-wrapper">
+						<input type="text" id="message-bar" v-model="messageContent" @keyup.13="sendMessage(messageContent)">
+					</div>
+				</div>
+				<div id="channel-choice-wrapper">
+					<input type="text" id="channel-choice" v-model.trim="channelChoice" @keyup.13="joinChannel(channelChoice)">
+					<button id="join-channel" type="button" @click="joinChannel(channelChoice)">Join</button>
+					<button id="leave-channel" type="button" @click="leaveChannel(channelChoice)">Leave</button>
 				</div>
 				<div id="logout-button-wrapper">
 					<button id="logout" type="button" @click="logout()">Log out</button>

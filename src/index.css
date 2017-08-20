@@ -36,7 +36,7 @@ body {
 	grid-template-rows: 5% 90% 5%;
 	grid-template-areas: "title-bar title-bar title-bar"
 						 "channel-list chat-area user-list"
-						 "footer message-bar logout"
+						 "channel-choice message-bar logout"
 }
 
 #chat-wrapper ul {
@@ -96,17 +96,43 @@ body {
 
 #chat-area-wrapper {
 	grid-area: chat-area;
+	position: relative;
 	display: block;
 	font-size: 13px;
-    border-style: solid;
+	border-style: solid;
+}
+
+#messages {
+	overflow: auto;
+	max-height: 96.5%;
 }
 
 #message-bar-wrapper {
-	grid-area: message-bar;
+	position: absolute;
+	width: 99.5%;
+	bottom: 0;
+}
+
+#message-bar {
+	width: 100%;
+}
+
+#channel-choice-wrapper {
+	grid-area: channel-choice;
+	display: inline-flex;
+	max-height: 20px;
+	margin-top: 10%;
+}
+
+#channel-choice {
+	max-width: 135px;
 }
 
 #logout-button-wrapper {
 	grid-area: logout;
+	display: inline-flex;
+	margin-top: 10%;
+	max-height: 20px;
 }
 
 #logout {
