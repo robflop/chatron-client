@@ -27,7 +27,7 @@ const app = new Vue({
 					timestamp: '22:04',
 					author: 'someonewithareallylongusername',
 					content: 'nothin\' to say to you',
-				}
+				},
 			],
 			def: [
 				{
@@ -101,11 +101,16 @@ const app = new Vue({
 					// reset input & errors so it won't display on logout
 					return this.loggedIn = true;
 				});
-				this.socket.on('channelUserEnter', user => {
-					// soon
+				this.socket.on('channelUserEnter', (user, channel) => {
+					if (!this.user.channels.hasOwnProperty(channel.name)) return;
+
+					this.user.channels[channel.name].users.push(user.username);
 				});
-				this.socket.on('channelUserLeave', user => {
-					// soon
+				this.socket.on('channelUserLeave', (user, channel) => {
+					if (!this.user.channels.hasOwnProperty(channel.name)) return;
+
+					const index = this.user.channels[channel.name].users.indexOf(user.username);
+					this.user.channels[channel.name].users.splice(index, 1);
 				});
 			});
 		},
@@ -132,6 +137,8 @@ const app = new Vue({
 
 		leaveChannel(channelChoice) {
 			if (!this.loggedIn) return;
+			if (!this.checkChannels(channelChoice)) return this.error = { message: 'Channel names must be 2-32 characters long.' };
+			if (Object.keys(this.user.channels).length === 1) return this.error = { message: 'Cannot leave last channel.' };
 
 			const channels = [];
 			for (const channelName of channelChoice.split(' ')) {
@@ -157,8 +164,6 @@ const app = new Vue({
 		switchChannel(channel) {
 			this.currentChannel = channel;
 			console.log(`Switched to channel '${channel}'.`);
-			const container = this.$el.querySelector('#messages');
-			container.scrollTop = container.scrollHeight;
 		},
 
 		sendMessage(messageContent) {
