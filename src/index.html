@@ -45,7 +45,7 @@
 				<div id="chat-area-wrapper">
 					<div id="messages" v-chat-scroll="{ always: false }">
 						<div class="message-wrapper" v-for="message in messages[currentChannel]">
-							<span class="message-info">[{{ message.timestamp }}] {{ message.author }}:</span>
+							<span class="message-info">[{{ message.timestamp }}] {{ message.author.username }}:</span>
 							<span class="message-content">{{ message.content }}</span>
 						</div>
 					</div>
@@ -57,6 +57,9 @@
 					<input type="text" id="channel-choice" v-model.trim="channelChoice" @keyup.13="joinChannel(channelChoice)">
 					<button id="join-channel" type="button" @click="joinChannel(channelChoice)">Join</button>
 					<button id="leave-channel" type="button" @click="leaveChannel(channelChoice)">Leave</button>
+				</div>
+				<div id="error-message-wrapper" v-if="error">
+					<div id="error-message" style="color:red">{{ error.message }}</div>
 				</div>
 				<div id="logout-button-wrapper">
 					<button id="logout" type="button" @click="logout()">Log out</button>
