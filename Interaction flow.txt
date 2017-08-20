@@ -1,9 +1,0 @@
-On opening: Dialog (or seperate html file) opens and asks for username and channel (html form field)
--> After submitting, send html post request to chatron-server with username and channel
--> Check if username exists in chatron-server, if it does reject with appropriate error, if not emit an okay event or so
--> also emit member list for the channel(s) being connected to i guess
--> On successful login, electron client loads the main html file
--> Use loops to display each channel and each member in the appropriate lists to the left and right
--> chat bar is a html form field, on submit sends a post request to chatron server with message content and username
--> on submitting a message, chatron-server updates the messages in the channel and emits a message event to chatron-client
--> on receiving the message event, chatron-client updates the chat window with the new content
