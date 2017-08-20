@@ -97,7 +97,7 @@ const app = new Vue({
 					Object.values(loginData.channels).forEach(channel => this.user.channels[channel.name] = channel);
 					this.currentChannel = Object.keys(this.user.channels)[0];
 					// set first channel as selected one by default
-					this.clearData();
+					this.clearData('login');
 					// reset input & errors so it won't display on logout
 					return this.loggedIn = true;
 				});
@@ -105,12 +105,14 @@ const app = new Vue({
 					if (!this.user.channels.hasOwnProperty(channel.name)) return;
 
 					this.user.channels[channel.name].users.push(user.username);
+					app.$forceUpdate(); // can't seem to get it to update otherwise
 				});
 				this.socket.on('channelUserLeave', (user, channel) => {
 					if (!this.user.channels.hasOwnProperty(channel.name)) return;
 
 					const index = this.user.channels[channel.name].users.indexOf(user.username);
 					this.user.channels[channel.name].users.splice(index, 1);
+					app.$forceUpdate(); // can't seem to get it to update otherwise
 				});
 			});
 		},
@@ -197,18 +199,27 @@ const app = new Vue({
 			if (!this.socket) return this.loggedIn = false;
 			this.socket.emit('logout', this.user);
 			this.socket.on('logout', () => {
-				this.socket.disconnect(); this.socket = null;
-				this.user = { username: '', channels: {} }; // reset to empty user
-				this.error = ''; // reset error if there was any while logged in
+				this.clearData('logout');
 				return this.loggedIn = false;
 			});
 		},
 
-		clearData() {
-			this.usernameInput = '';
-			this.channelsInput = '';
-			this.serverInput = '';
-			this.error = '';
+		clearData(procedure) {
+			if (procedure === 'login') {
+				this.usernameInput = '';
+				this.channelsInput = '';
+				this.serverInput = '';
+				this.error = '';
+				// reset all values that were used during login
+			}
+			else if (procedure === 'logout') {
+				this.socket.disconnect(); this.socket = null;
+				this.user = { username: '', channels: {} };
+				this.error = '';
+				this.messageContent = '';
+				this.channelChoice = '';
+				// reset all values that may have been used when logged in
+			}
 		}
 	}
 });
