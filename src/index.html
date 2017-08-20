@@ -5,6 +5,7 @@
 		<title>Chatron</title>
 		<link rel="stylesheet" href="./index.css">
 		<script src="https://unpkg.com/vue"></script>
+		<script src="../node_modules/vue-chat-scroll/dist/vue-chat-scroll.js"></script>
 	</head>
 
 	<body>
@@ -42,7 +43,7 @@
 					</ul>
 				</div>
 				<div id="chat-area-wrapper">
-					<div id="messages" >
+					<div id="messages" v-chat-scroll="{ always: false }">
 						<div class="message-wrapper" v-for="message in messages[currentChannel]">
 							<span class="message-info">[{{ message.timestamp }}] {{ message.author }}:</span>
 							<span class="message-content">{{ message.content }}</span>
