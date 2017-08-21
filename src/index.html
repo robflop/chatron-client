@@ -50,7 +50,7 @@
 						</div>
 					</div>
 					<div id="message-bar-wrapper">
-						<input type="text" id="message-bar" v-model.trim="messageContent" @keyup.13="sendMessage(messageContent)">
+						<input type="text" id="message-bar" v-model.trim="messageContent" @keyup.13="sendMessage(messageContent)" @keydown.38="insertLastMsg">
 					</div>
 				</div>
 				<div id="channel-choice-wrapper">

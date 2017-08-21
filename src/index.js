@@ -9,6 +9,7 @@ const app = new Vue({
 		error: '',
 		user: { username: '', channels: {} },
 		messageContent: '',
+		lastMessage: '',
 		currentChannel: '',
 		channelChoice: '',
 		messages: {}
@@ -47,7 +48,7 @@ const app = new Vue({
 			// prepend http if not present to connect properly
 
 			this.socket = io(host);
-			attachListeners(this.socket);
+			return attachListeners(this.socket);
 		},
 
 		joinChannel(channelChoice) {
@@ -59,7 +60,7 @@ const app = new Vue({
 				channels.push({ name: channelName });
 			}
 
-			this.socket.emit('channelJoin', this.user, channels);
+			return this.socket.emit('channelJoin', this.user, channels);
 		},
 
 		leaveChannel(channelChoice) {
@@ -74,12 +75,11 @@ const app = new Vue({
 				channels.push({ name: channelName });
 			}
 
-			this.socket.emit('channelLeave', this.user, channels);
+			return this.socket.emit('channelLeave', this.user, channels);
 		},
 
 		switchChannel(channel) {
-			this.currentChannel = channel;
-			console.log(`Switched to channel '${channel}'.`);
+			return this.currentChannel = channel;
 		},
 
 		sendMessage(messageContent) {
@@ -100,7 +100,11 @@ const app = new Vue({
 				channel: { name: this.currentChannel }
 			};
 
-			this.socket.emit('message', message);
+			return this.socket.emit('message', message);
+		},
+
+		insertLastMsg() {
+			return this.lastMessage ? this.messageContent = this.lastMessage : null;
 		},
 
 		logout() {
@@ -191,7 +195,8 @@ function attachListeners(emitter) {
 		if (!app.user.channels.hasOwnProperty(message.channel.name)) return;
 		// in case a message for a channel the user is not on slips through
 		if (message.error) return app.error = message.error;
-		app.messageContent = '';
+		app.lastMessage = app.messageContent; app.messageContent = '';
+		// lastMessage to select via arrow-up key
 		app.messages[message.channel.name].push(message);
 		return app.$forceUpdate(); // can't seem to get it to update otherwise
 	});
