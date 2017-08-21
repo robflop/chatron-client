@@ -50,7 +50,7 @@
 						</div>
 					</div>
 					<div id="message-bar-wrapper">
-						<input type="text" id="message-bar" v-model="messageContent" @keyup.13="sendMessage(messageContent)">
+						<input type="text" id="message-bar" v-model.trim="messageContent" @keyup.13="sendMessage(messageContent)">
 					</div>
 				</div>
 				<div id="channel-choice-wrapper">
@@ -59,7 +59,7 @@
 					<button id="leave-channel" type="button" @click="leaveChannel(channelChoice)">Leave</button>
 				</div>
 				<div id="error-message-wrapper" v-if="error">
-					<div id="error-message" style="color:red">{{ error.message }}</div>
+					<p id="error-message" style="color:red">{{ error.message }}</p>
 				</div>
 				<div id="logout-button-wrapper">
 					<button id="logout" type="button" @click="logout()">Log out</button>
