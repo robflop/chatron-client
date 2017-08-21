@@ -44,7 +44,7 @@
 				</div>
 				<div id="chat-area-wrapper">
 					<div id="messages" v-chat-scroll="{ always: false }">
-						<div class="message-wrapper" v-for="message in messages[currentChannel]">
+						<div class="message-wrapper" v-for="message in user.channels[currentChannel].messages">
 							<span class="message-info">[{{ message.timestamp }}] {{ message.author.username }}:</span>
 							<span class="message-content">{{ message.content }}</span>
 						</div>

@@ -11,8 +11,7 @@ const app = new Vue({
 		messageContent: '',
 		lastMessage: '',
 		currentChannel: '',
-		channelChoice: '',
-		messages: {}
+		channelChoice: ''
 	},
 	mounted() {
 		window.addEventListener('beforeunload', () => {
@@ -159,7 +158,6 @@ function attachListeners(emitter) {
 		}
 		Object.values(loginData.channels).forEach(channel => {
 			app.user.channels[channel.name] = channel;
-			app.messages[channel.name] = [];
 		});
 		app.currentChannel = Object.keys(app.user.channels)[0];
 		// set first channel as selected one by default
@@ -172,7 +170,6 @@ function attachListeners(emitter) {
 		if (channelData.error) return app.error = channelData.error;
 		channelData.channels.forEach(channel => {
 			app.user.channels[channel.name] = channel;
-			if (!app.messages[channel.name]) app.messages[channel.name] = [];
 		});
 		app.switchChannel(channelData.channels[0].name);
 		// switch to first new channel
@@ -185,7 +182,6 @@ function attachListeners(emitter) {
 			if (app.currentChannel === channel.name) app.switchChannel(Object.keys(app.user.channels)[0]);
 			// move away from channel being deleted if it's selected
 			Vue.delete(app.user.channels, channel.name);
-			// keeping messages in case user joins back or so
 		});
 
 		return app.channelChoice = '';
@@ -197,7 +193,7 @@ function attachListeners(emitter) {
 		// in case a message for a channel the user is not on slips through
 		app.lastMessage = app.messageContent; app.messageContent = '';
 		// lastMessage to select via arrow-up key
-		app.messages[message.channel.name].push(message);
+		app.user.channels[message.channel.name].messages.push(message);
 		return app.$forceUpdate(); // can't seem to get it to update otherwise
 	});
 
