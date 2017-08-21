@@ -1,4 +1,5 @@
 const { app, BrowserWindow } = require('electron');
+const { productName, version, description } = require('../package.json');
 app.setAppUserModelId('com.robflop.chatron');
 
 app.on('ready', () => {
@@ -7,7 +8,7 @@ app.on('ready', () => {
 	mainWindow.on('ready-to-show', () => {
 		mainWindow.setMenu(null);
 		mainWindow.setSize(1080, 720);
-		mainWindow.setTitle('Chatron');
+		mainWindow.setTitle(`${productName} ${version} - ${description}`);
 		mainWindow.show();
 	});
 });
