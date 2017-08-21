@@ -27,9 +27,9 @@ const app = new Vue({
 			return this.usernameInput.length >= 2 && this.usernameInput.length <= 32;
 		},
 
-		checkChannels(input) {
-			if (!input) return false;
-			return input.split(' ').every(channel => channel.trim().length >= 2 && channel.trim().length <= 32);
+		checkChannels(channels) {
+			if (!channels) return false;
+			return channels.split(' ').every(channel => channel.trim().length >= 2 && channel.trim().length <= 32);
 		},
 
 		checkServer() {
@@ -192,9 +192,9 @@ function attachListeners(emitter) {
 	});
 
 	emitter.on('message', message => {
+		if (message.error) return app.error = message.error;
 		if (!app.user.channels.hasOwnProperty(message.channel.name)) return;
 		// in case a message for a channel the user is not on slips through
-		if (message.error) return app.error = message.error;
 		app.lastMessage = app.messageContent; app.messageContent = '';
 		// lastMessage to select via arrow-up key
 		app.messages[message.channel.name].push(message);
