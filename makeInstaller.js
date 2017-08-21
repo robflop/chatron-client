@@ -1,5 +1,6 @@
 const createWindowsInstaller = require('electron-winstaller').createWindowsInstaller;
 const path = require('path');
+const { version } = require('./package.json');
 
 getInstallerConfig()
      .then(createWindowsInstaller)
@@ -17,7 +18,7 @@ function getInstallerConfig() {
 		authors: 'robflop',
 		outputDirectory: path.join(appPath, '..', 'windows-installer'),
 		exe: 'Chatron.exe',
-		setupExe: 'ChatronInstaller.exe',
+		setupExe: `ChatronInstaller-${version}.exe`,
 		description: 'Chatron',
 		title: 'Chatron',
 		iconURL: 'https://github.com/robflop/chatron-client/raw/master/src/icon.ico',
