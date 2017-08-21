@@ -86,16 +86,10 @@ const app = new Vue({
 			if (messageContent.length === 0) return this.error = { message: 'Messges may not be empty.' };
 			if (messageContent.length > 2000) return this.error = { message: 'Message content may not exceed 2000 characters.' };
 
-			function currentTime() {
-				function pad(number) { return (number < 10 ? '0' : '') + number; }
-
-				return `${pad(new Date().getHours())}:${pad(new Date().getMinutes())}`;
-			}
-
 			const message = {
 				content: messageContent,
 				author: { username: this.user.username },
-				timestamp: currentTime(),
+				timestamp: Date.now(), // unix timestamp to account for timezones
 				channel: { name: this.currentChannel }
 			};
 
@@ -156,8 +150,12 @@ function attachListeners(emitter) {
 			// reset socket so it can be properly re-established next try
 			return app.error = loginData.error;
 		}
+
 		Object.values(loginData.channels).forEach(channel => {
 			app.user.channels[channel.name] = channel;
+			app.user.channels[channel.name].messages.forEach(message => {
+				message.time = formatUnixTime(message.time);
+			});
 		});
 		app.currentChannel = Object.keys(app.user.channels)[0];
 		// set first channel as selected one by default
@@ -170,6 +168,9 @@ function attachListeners(emitter) {
 		if (channelData.error) return app.error = channelData.error;
 		channelData.channels.forEach(channel => {
 			app.user.channels[channel.name] = channel;
+			app.user.channels[channel.name].messages.forEach(message => {
+				message.time = formatUnixTime(message.time);
+			});
 		});
 		app.switchChannel(channelData.channels[0].name);
 		// switch to first new channel
@@ -183,8 +184,7 @@ function attachListeners(emitter) {
 			if (app.currentChannel === channel.name) {
 				const nextChannel = channels.filter(channel => channel !== app.currentChannel)[0];
 				app.switchChannel(nextChannel);
-			}
-			// move away from channel being deleted if it's selected
+			} // move away from channel being deleted if it's selected
 			Vue.delete(app.user.channels, channel.name);
 		});
 
@@ -195,6 +195,7 @@ function attachListeners(emitter) {
 		if (message.error) return app.error = message.error;
 		if (!app.user.channels.hasOwnProperty(message.channel.name)) return;
 		// in case a message for a channel the user is not on slips through
+		message.timestamp = formatUnixTime(message.timestamp);
 		app.lastMessage = app.messageContent; app.messageContent = '';
 		// lastMessage to select via arrow-up key
 		app.user.channels[message.channel.name].messages.push(message);
@@ -219,4 +220,10 @@ function attachListeners(emitter) {
 		app.clearData('logout');
 		return app.loggedIn = false;
 	});
+}
+
+function formatUnixTime(timestamp) {
+	function pad(number) { return (number < 10 ? '0' : '') + number; }
+
+	return `${pad(new Date(timestamp).getHours())}:${pad(new Date(timestamp).getMinutes())}`;
 }
