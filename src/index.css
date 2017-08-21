@@ -33,7 +33,7 @@ body {
 	height: 100vh;
 	display: grid;
 	grid-template-columns: 135px auto 135px;
-	grid-template-rows: 5% 90% 5%;
+	grid-template-rows: 5% 88% 5%;
 	grid-template-areas: "title-bar title-bar title-bar"
 						 "channel-list chat-area user-list"
 						 "channel-choice message-bar logout"
@@ -119,19 +119,23 @@ body {
 
 #channel-choice-wrapper {
 	grid-area: channel-choice;
-	display: inline-flex;
-	max-height: 20px;
-	margin-top: 10%;
+	margin-left: 5px;
+}
+
+#channel-choice-wrapper button {
+	width: 48%;
 }
 
 #channel-choice {
-	max-width: 135px;
+	max-width: 125px;
 }
 
 #error-message-wrapper {
 	grid-area: message-bar;
-	margin-left: 105px;
-	margin-top: 13px;
+}
+
+#error-message {
+	margin-left: 10px;
 }
 
 #logout-button-wrapper {
