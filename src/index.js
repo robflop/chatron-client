@@ -178,8 +178,12 @@ function attachListeners(emitter) {
 
 	emitter.on('channelLeave', channelData => {
 		if (channelData.error) return app.error = channelData.error;
+		const channels = Object.keys(app.user.channels);
 		channelData.channels.forEach(channel => {
-			if (app.currentChannel === channel.name) app.switchChannel(Object.keys(app.user.channels)[0]);
+			if (app.currentChannel === channel.name) {
+				const nextChannel = channels.filter(channel => channel !== app.currentChannel)[0];
+				app.switchChannel(nextChannel);
+			}
 			// move away from channel being deleted if it's selected
 			Vue.delete(app.user.channels, channel.name);
 		});
