@@ -1,4 +1,5 @@
 const { app, BrowserWindow } = require('electron');
+app.setAppUserModelId('com.robflop.chatron');
 
 app.on('ready', () => {
 	const mainWindow = new BrowserWindow({ minWidth: 1080, minHeight: 720, webPreferences: { devTools: false }, center: true, show: false });
