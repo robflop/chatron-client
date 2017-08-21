@@ -84,6 +84,7 @@ const app = new Vue({
 
 		sendMessage(messageContent) {
 			if (!this.loggedIn) return;
+			if (messageContent.length === 0) return this.error = { message: 'Messges may not be empty.' };
 			if (messageContent.length > 2000) return this.error = { message: 'Message content may not exceed 2000 characters.' };
 
 			function currentTime() {
