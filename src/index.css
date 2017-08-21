@@ -100,6 +100,8 @@ body {
 	display: block;
 	font-size: 13px;
 	border-style: solid;
+	overflow: hidden;
+	word-wrap: break-word;
 }
 
 #messages {
