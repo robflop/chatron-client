@@ -1,6 +1,6 @@
 {
   "name": "chatron",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "productName": "Chatron",
   "description": "A chatroom client built with electron, vuejs and socket.io.",
   "main": "./src/client",
