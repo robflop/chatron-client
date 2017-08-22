@@ -75,6 +75,14 @@ body {
 	padding-right: 5px;
 }
 
+.channelHighlight {
+	background-color: #3596C9;
+}
+
+.ownUser {
+	background-color: #3596C9;
+}
+
 #user-list-wrapper {
 	grid-area: user-list;
     border-top: solid;
@@ -92,6 +100,11 @@ body {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+	cursor: pointer;
+}
+
+#user-list > li:hover:not(.ownUser), #channel-list > li:hover:not(.channelHighlight) {
+	background-color: lightblue;
 }
 
 #chat-area-wrapper {
