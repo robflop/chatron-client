@@ -1,6 +1,6 @@
 {
   "name": "chatron",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "productName": "Chatron",
   "description": "A chatroom client built with electron, vuejs and socket.io.",
   "main": "./src/client",
@@ -18,7 +18,7 @@
   },
   "scripts": {
     "test": "eslint src && htmlhint",
-    "build": "electron-packager . Chatron --platform win32 --arch x64 --out dist/ --prune  --icon=./src/icon.ico --app-bundle-id=robflop --helper-bundle-id=robflop --version-string.CompanyName=\"robflop\" --version-string.ProductName=Chatron --version-string.FileDescription=Chatron --version-string.LegalCopyright=\"Copyright (C) 2017 robflop\" --version-string.InternalName=robflop --version-string.OriginalFilename=Chatron.exe",
+    "build": "electron-packager . Chatron --platform win32 --arch x64 --asar=true --out dist/ --overwrite --prune  --icon=./src/icon.ico --app-bundle-id=robflop --helper-bundle-id=robflop --version-string.CompanyName=\"robflop\" --version-string.ProductName=Chatron --version-string.FileDescription=Chatron --version-string.LegalCopyright=\"Copyright (C) 2017 robflop\" --version-string.InternalName=robflop --version-string.OriginalFilename=Chatron.exe",
     "setup": "node makeInstaller.js"
   },
   "repository": {

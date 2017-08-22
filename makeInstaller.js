@@ -20,6 +20,7 @@ function getInstallerConfig() {
 		exe: 'Chatron.exe',
 		setupExe: `ChatronInstaller-${version}.exe`,
 		description: 'Chatron',
+		noMsi: true,
 		title: 'Chatron',
 		iconURL: 'https://github.com/robflop/chatron-client/raw/master/src/icon.ico',
 		setupIcon: path.join(appPath, '..', '..', 'src', 'icon.ico')
