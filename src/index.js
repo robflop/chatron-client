@@ -205,13 +205,13 @@ function attachListeners(emitter) {
 	emitter.on('channelUserEnter', (user, channel) => {
 		if (!app.user.channels.hasOwnProperty(channel.name)) return;
 
-		app.user.channels[channel.name].users.push(user.username);
+		app.user.channels[channel.name].users.push(user);
 		app.$forceUpdate(); // can't seem to get it to update otherwise
 	});
 	emitter.on('channelUserLeave', (user, channel) => {
 		if (!app.user.channels.hasOwnProperty(channel.name)) return;
 
-		const index = app.user.channels[channel.name].users.indexOf(user.username);
+		const index = app.user.channels[channel.name].users.indexOf(user);
 		app.user.channels[channel.name].users.splice(index, 1);
 		app.$forceUpdate(); // can't seem to get it to update otherwise
 	});
