@@ -196,8 +196,10 @@ function attachListeners(emitter) {
 		if (!app.user.channels.hasOwnProperty(message.channel.name)) return;
 		// in case a message for a channel the user is not on slips through
 		message.timestamp = formatUnixTime(message.timestamp);
-		app.lastMessage = app.messageContent; app.messageContent = '';
-		// lastMessage to select via arrow-up key
+		if (message.author.username === user.username) {
+			app.lastMessage = app.messageContent;
+			app.messageContent = '';
+		} // lastMessage to select via arrow-up key
 		app.user.channels[message.channel.name].messages.push(message);
 		return app.$forceUpdate(); // can't seem to get it to update otherwise
 	});
