@@ -154,7 +154,7 @@ function attachListeners(emitter) {
 		Object.values(loginData.channels).forEach(channel => {
 			app.user.channels[channel.name] = channel;
 			app.user.channels[channel.name].messages.forEach(message => {
-				message.time = formatUnixTime(message.time);
+				message.timestamp = formatUnixTime(message.timestamp);
 			});
 		});
 		app.currentChannel = Object.keys(app.user.channels)[0];
@@ -169,7 +169,7 @@ function attachListeners(emitter) {
 		channelData.channels.forEach(channel => {
 			app.user.channels[channel.name] = channel;
 			app.user.channels[channel.name].messages.forEach(message => {
-				message.time = formatUnixTime(message.time);
+				message.timestamp = formatUnixTime(message.timestamp);
 			});
 		});
 		app.switchChannel(channelData.channels[0].name);
