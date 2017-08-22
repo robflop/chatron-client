@@ -48,9 +48,10 @@
 				</div>
 				<div id="chat-area-wrapper">
 					<div id="messages" v-chat-scroll="{ always: false }">
-						<div class="message-wrapper" v-for="message in user.channels[currentChannel].messages">
+						<div class="message-wrapper" v-for="message in user.channels[currentChannel].messages" :class="{ systemMessage: message.author.username === 'system' }">
 							<span class="message-info">[{{ message.timestamp }}] {{ message.author.username }}:</span>
-							<span class="message-content">{{ message.content }}</span>
+							<span class="message-content" v-if="message.author.username === 'system'" v-html="message.content"></span>
+							<span class="message-content" v-else>{{ message.content }}</span>
 						</div>
 					</div>
 					<div id="message-bar-wrapper">

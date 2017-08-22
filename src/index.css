@@ -122,6 +122,10 @@ body {
 	max-height: 96.5%;
 }
 
+.systemMessage {
+	background-color: #CDA460;
+}
+
 #message-bar-wrapper {
 	position: absolute;
 	width: 99.5%;
