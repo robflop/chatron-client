@@ -196,7 +196,7 @@ function attachListeners(emitter) {
 		if (!app.user.channels.hasOwnProperty(message.channel.name)) return;
 		// in case a message for a channel the user is not on slips through
 		message.timestamp = formatUnixTime(message.timestamp);
-		if (message.author.username === user.username) {
+		if (message.author.username === app.user.username) {
 			app.lastMessage = app.messageContent;
 			app.messageContent = '';
 		} // lastMessage to select via arrow-up key
