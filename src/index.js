@@ -114,7 +114,7 @@ const app = new Vue({
 				// reset all values that were used during login
 			}
 			else if (procedure === 'logout') {
-				this.socket.disconnect();
+				this.socket.disconnect(); this.socket = '';
 				this.user = { username: '', channels: {} };
 				this.error = '';
 				this.messageContent = '';
@@ -132,7 +132,7 @@ function attachListeners(emitter) {
 
 	emitter.on('connect_error', error => {
 		app.user = { username: '', channels: {} }; // reset to empty user
-		app.socket.disconnect();
+		app.socket.disconnect(); app.socket = '';
 		// reset socket so it can be properly re-established next try
 		return app.error = { message: 'An error occurred connecting to the server.' };
 	});
