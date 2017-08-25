@@ -21,7 +21,7 @@
     "build-x64": "electron-packager . Chatron --platform win32 --arch x64 --asar=true --out dist/ --overwrite --prune  --icon=./src/icon.ico --app-bundle-id=robflop --helper-bundle-id=robflop --version-string.CompanyName=\"robflop\" --version-string.ProductName=Chatron --version-string.FileDescription=Chatron --version-string.LegalCopyright=\"Copyright (C) 2017 robflop\" --version-string.InternalName=robflop --version-string.OriginalFilename=Chatron.exe",
 	"build-ia32": "electron-packager . Chatron --platform win32 --arch ia32 --asar=true --out dist/ --overwrite --prune  --icon=./src/icon.ico --app-bundle-id=robflop --helper-bundle-id=robflop --version-string.CompanyName=\"robflop\" --version-string.ProductName=Chatron --version-string.FileDescription=Chatron --version-string.LegalCopyright=\"Copyright (C) 2017 robflop\" --version-string.InternalName=robflop --version-string.OriginalFilename=Chatron.exe",
 	"build-win": "npm run build-x64 && npm run build-ia32",
-	"setup": "node makeInstaller.js"
+	"setup": "node makeInstallers.js"
   },
   "repository": {
     "type": "git",
