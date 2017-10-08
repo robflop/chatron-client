@@ -6,11 +6,11 @@
   "main": "./src/client",
   "dependencies": {
     "socket.io": "^2.0.3",
-    "vue-chat-scroll": "^1.2.0"
+    "vue-chat-scroll": "^1.2.1"
   },
   "devDependencies": {
-    "electron": "^1.7.5",
-    "electron-packager": "^8.7.2",
+    "electron": "^1.7.8",
+    "electron-packager": "^9.1.0",
     "electron-winstaller": "^2.6.3",
     "eslint": "^4.4.1",
     "htmlhint": "^0.9.13",
@@ -18,10 +18,10 @@
   },
   "scripts": {
     "test": "eslint src && htmlhint",
-    "build-x64": "electron-packager . Chatron --platform win32 --arch x64 --asar=true --out dist/ --overwrite --prune  --icon=./src/icon.ico --app-bundle-id=robflop --helper-bundle-id=robflop --version-string.CompanyName=\"robflop\" --version-string.ProductName=Chatron --version-string.FileDescription=Chatron --version-string.LegalCopyright=\"Copyright (C) 2017 robflop\" --version-string.InternalName=robflop --version-string.OriginalFilename=Chatron.exe",
-	"build-ia32": "electron-packager . Chatron --platform win32 --arch ia32 --asar=true --out dist/ --overwrite --prune  --icon=./src/icon.ico --app-bundle-id=robflop --helper-bundle-id=robflop --version-string.CompanyName=\"robflop\" --version-string.ProductName=Chatron --version-string.FileDescription=Chatron --version-string.LegalCopyright=\"Copyright (C) 2017 robflop\" --version-string.InternalName=robflop --version-string.OriginalFilename=Chatron.exe",
+	"build-x64": "node buildWin.js x64",
+    "build-ia32": "node buildWin.js",
 	"build-win": "npm run build-x64 && npm run build-ia32",
-	"setup": "node makeInstallers.js"
+	"setup": "node makeInstallers.js && node makeInstallers.js x64"
   },
   "repository": {
     "type": "git",
