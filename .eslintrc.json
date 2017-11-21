@@ -10,14 +10,14 @@
     "node": true
   },
   "rules": {
-    "no-unused-vars": "off",
-    "use-isnan": "error",
-    "prefer-const": ["error", {
+	"no-unused-vars": "off",
+	"use-isnan": "error",
+	"prefer-const": ["error", {
         	"destructuring": "any",
         	"ignoreReadBeforeAssign": true
     }],
-    "no-var": "error",
-    "no-console": "off",
+	"no-var": "error",
+	"no-console": "off",
     "no-compare-neg-zero": "error",
     "no-extra-parens": ["warn", "all", {
       "nestedBinaryExpressions": false
@@ -78,7 +78,7 @@
     "indent": ["error", "tab", { "SwitchCase": 1 }],
     "key-spacing": "error",
     "keyword-spacing": "error",
-    "max-len": ["error", 150],
+	"max-len": ["error", 150],
     "max-depth": "error",
     "max-nested-callbacks": ["error", { "max": 8 }],
     "max-statements-per-line": ["error", { "max": 3 }],
@@ -110,7 +110,7 @@
     "template-tag-spacing": "error",
     "unicode-bom": "error",
 
-    "arrow-body-style": "error",
+    "arrow-body-style": "off",
     "arrow-parens": ["error", "as-needed"],
     "arrow-spacing": "error",
     "no-duplicate-imports": "error",
