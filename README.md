@@ -2,7 +2,7 @@
 
  [![Build Status](https://travis-ci.org/robflop/chatron-client.svg?branch=master)](https://travis-ci.org/robflop/chatron-client)
 
-A chatroom client built with electron, vuejs and socket.io.
+A chatroom client built with [electron](https://electronjs.org/), [vuejs](https://vuejs.org/).
 
 To be used with [chatron-server](https://github.com/robflop/chatron-server).
 

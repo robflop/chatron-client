@@ -16,7 +16,7 @@ const buildOptions = {
 	win32metadata: {
 		CompanyName: 'robflop',
 		ProductName: 'Chatron',
-		FileDescription: 'A chatroom client built with electron, vuejs and socket.io.',
+		FileDescription: 'A chatroom client built with electron and vuejs.',
 		OriginalFilename: 'Chatron.exe'
 	}
 };
