@@ -4,7 +4,7 @@ console.log('Now building... (This might take a while)');
 
 const buildOptions = {
 	dir: './',
-	appCopyright: 'Copyright (C) 2017 robflop',
+	appCopyright: 'Copyright (C) 2018 robflop',
 	platform: 'win32',
 	arch: process.argv[2] || 'ia32',
 	asar: true,

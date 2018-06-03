@@ -24,7 +24,7 @@ const settings = {
 	setupIcon: join(appDirectory, '..', '..', 'src', 'icon.ico')
 };
 
-return createWindowsInstaller(settings)
+createWindowsInstaller(settings)
 	.then(() => {
 		console.log(`Installer successfully created ${platformPhrase}`);
 		process.exit();
